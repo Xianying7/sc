@@ -1,5 +1,6 @@
 <?php
 
+
 error_reporting(0);
 if($eval == false) {
     eval(str_replace('<?php',"",get_e("build_index.php")));
@@ -90,7 +91,7 @@ for($s=2;$s<11;$s++){
             base_run(host."verify/hshort",http_build_query(["status" => 1]));
             goto shortlinks;
         }
-        $bypas=visit_short($r);
+        $bypas = visit_short($r);
         if($bypas == "refresh"){
             goto shortlinks;
         } elseif(!$bypas){
@@ -99,7 +100,7 @@ for($s=2;$s<11;$s++){
         }
         $r3 = base_run($bypas);
         if($r3["notif"]){
-            print h.$r3["notif"].n;
+            an(h.$r3["notif"].n);
             line().ket("balance",$r3["balance"]).line();
         }
     }
@@ -148,7 +149,7 @@ for($s=2;$s<11;$s++){
             unlink(cookie_only);
             goto DATA; 
         } elseif($r3["notif"]){
-            print h.$r3["notif"].n;
+            an(h.$r3["notif"].n);
             line();
             ket("balance",$r3["balance"]).line();
         } elseif($r3["time"]){
@@ -160,7 +161,8 @@ for($s=2;$s<11;$s++){
 }
     
 function base_run($url,$data=0){
-    $r = curl($url,hmc(),$data,true,false);
+    global $u_c;
+    $r = curl($url,hmc(0,$u_c),$data,true,false);
     //die(file_put_contents("response_body.html",$r[1]));
     //$r=file_get_contents("response_body.html");
     preg_match("#Just a moment#is",$r[1],$cloudflare);
