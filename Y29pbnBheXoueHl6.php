@@ -17,7 +17,6 @@ $u_a = save("useragent");
 $u_c = save(cookie_only);
 
 
-
 $r = base_run(host."dashboard");
 if($r["cookie"]) {
     goto DATA;
@@ -71,7 +70,10 @@ for($s=0;$s<2;$s++) {
     if($r["cookie"]) {
         goto DATA;
     }
-    ket(" ",$r["info_contest"]).line();
+    if($r["info_claim"]) {
+        $total = " | your claim: ".$r["info_claim"];
+    }
+    ket(" ",$r["info_contest"].$total).line();
     for($i=0;$i<20;$i++) {
         if($r["contest"][1][$i]) {
             ket($r["contest"][1][$i],$r["contest"][2][$i]." (".k.$r["contest"][3][$i].k.") ".p.$r["contest"][4][$i]);
@@ -257,6 +259,7 @@ function base_run($url,$data=0) {
     preg_match('#(badge-success">)(\d+)#is',$r[1],$s);
     preg_match_all('#(class="bxbx-check-doublelabel-icon"></i>)(.*?)(</a>|</span>)#is',trimed($r[1]),$ready);
     preg_match('#class="card-title mb-4">(.*?)<#is',$r[1],$info_contest);
+    preg_match('#(claim this week: )(\d+)#is',$r[1],$info_claim);
     preg_match_all('#<tr><th scope="row">(.*?)</th><td class="username-rank">(.*?)</td><td>(.*?)</td><td>(.*?)</td></tr>#is',$r[1],$contest);
     
     //print_r($sl);
@@ -282,6 +285,7 @@ function base_run($url,$data=0) {
         "redirect" => $redirect[0],
         "ready" => $ready[2],
         "info_contest" => $info_contest[1],
+        "info_claim" => $info_claim[2],
         "contest" => $contest,
         "json" => json_decode($r[1])
     ];
