@@ -34,7 +34,7 @@ if($r["ready"][0] == "Ready") {
     goto faucet;
 } else {
     L(5);
-    if($r["left_sl"] >= 7){
+    if($r["left_sl"] >= 2){
         goto shortlinks;
     }
     goto ptc;
@@ -110,9 +110,12 @@ while(true){
 }
 
 
+
+
 faucet:
 while(true) {
     $r = base_run(host."faucet");
+    $awal = strtotime(date('H:i:s'));
     if($r["cookie"]) {
         goto DATA;
     }
@@ -132,23 +135,29 @@ while(true) {
     if(!$antibot) {
         continue;
     }
+    $akhir = strtotime(date('H:i:s'));
+    $sec = $akhir - $awal;
+    if($sec >= 7 == null){
+        L(7 - $sec);
+    }
     $data = http_build_query([
         explode('"',$r["token_csrf"][1][0])[0] => $r["token_csrf"][2][0],
-        explode('"',$r["token_csrf"][1][1])[0] => $r["token_csrf"][2][1],
+        explode('"',$r["token_csrf"][1][1])[0] =># "xxxx",
+        $r["token_csrf"][2][1],
         "antibotlinks" => $antibot,
         "utt" => "",
         "captcha" => "recaptchav2",
         "g-recaptcha-response" => ""
     ]);
-    $r1 = base_run($r["redirect"][0],$data);
     
+    $r1 = base_run($r["redirect"][0],$data);
     if(preg_match("#good#is",$r1["notif"]) == true) {
         an(h.$r1["notif"].n);
         line().ket("balance",$r1["balance"]).line();
-        if($r1["left_sl"] >= 7){
-            L(5);
-            $w_f  = strtotime(date("H:i:s"));
-            goto shortlinks;
+        if($r1["left_sl"] >= 2){
+              L(5);
+              $w_f = strtotime(date("H:i:s"));
+              goto shortlinks;
         } elseif($r1["left_ptc"] >= 1){
             L(5);
             goto ptc;
@@ -217,10 +226,11 @@ while(true) {
         an(h.$r1["notif"].n);
         line().ket("balance",$r1["balance"]).line();
         $w_sl = strtotime(date("H:i:s"));
-        if(5 * 60 >= $w_sl - $w_f){
-        tmr(1,60 * 5 - $w_sl - $w_f);
+        $tmr = $w_sl - $w_f;
+        $wait = 5 * 60;
+        if($tmr >= $wait == null){
+           tmr(1,$wait - $tmr);
         }
-        L(5);
         goto faucet;
     } else {
         print m.$r1["notif"];r();
@@ -230,6 +240,7 @@ while(true) {
 function base_run($url,$data=0) {
   $u_c = file_get_contents(cookie_only);
   $r = curl($url,hmc(0,$u_c),$data,true,false);
+  #die(file_put_contents("html.html",$r[1]));
   //die(ex("_name=","∆",1,str_replace(";","∆",set_cookie($r[0][2]))).n.n.$u_c);
   if(preg_match("#(".ex("_name=","∆",1,str_replace(";","∆",set_cookie($r[0][2]))).")#is",$u_c) == null){
     unlink(cookie_only);
