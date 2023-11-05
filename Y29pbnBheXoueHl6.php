@@ -144,7 +144,7 @@ dashboard:
 faucet:
   while(true){
     $r = base_run(host."faucet");
-    $awal = strtotime(date('H:i:s'));
+   # $awal = strtotime(date('H:i:s'));
     if($r["cloudflare"]){
       print m.sc." cloudflare!".n;
       unlink(cookie_only);
@@ -170,11 +170,11 @@ faucet:
     if(!$antibot){
       continue;
     }
-    $akhir = strtotime(date('H:i:s'));
+   /* $akhir = strtotime(date('H:i:s'));
     $sec = $akhir - $awal;
     if($sec >= 7 == null){
       L(7 - $sec);
-    }
+    }*/
     $data = http_build_query([
       explode('"',$r["token_csrf"][1][0])[0] => $r["token_csrf"][2][0],
       explode('"',$r["token_csrf"][1][1])[0] =># "xxxx",
