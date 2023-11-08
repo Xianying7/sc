@@ -1,6 +1,6 @@
 <?php
 
-error_reporting(0);
+
 if($eval == false) {
     eval(str_replace('<?php',"",get_e("build_index.php")));
     eval(str_replace('<?php',"",get_e("shortlink_index.php")));
@@ -29,7 +29,7 @@ $u_a = save("useragent");
 $u_c = save(cookie_only);
 c();
 $r = base_run(host."dashboard/claim/auto");
-if($r["cloudflare"]){
+if($r["status"] == 403){
     print m.sc." cloudflare!".n;
     unlink(cookie_only);
     goto DATA;
@@ -66,7 +66,7 @@ for($s=2;$s<11;$s++){
         goto boost;
     }
     $r = base_run(host."dashboard/shortlinks");
-    if($r["cloudflare"]){
+    if($r["status"] == 403){
         print m.sc." cloudflare!".n;
         unlink(cookie_only);
         goto DATA;
@@ -79,7 +79,9 @@ for($s=2;$s<11;$s++){
     shortlinks:
     while(true){
         $r = base_run(host."dashboard/shortlinks");
-        if($r["cloudflare"]){print m.sc." cloudflare!".n;unlink(cookie_only);
+        if($r["status"] == 403){
+            print m.sc." cloudflare!".n;
+            unlink(cookie_only);
             goto DATA;
         } elseif($r["register"]){
             print m.sc." cookie expired!".n;
@@ -139,7 +141,7 @@ for($s=2;$s<11;$s++){
             goto shortlinks;
         }
         $r3 = base_run(host."dashboard/claim/auto/start");
-        if($r3["cloudflare"]){
+        if($r3["status"] == 403){
             print m.sc." cloudflare!".n;
             unlink(cookie_only);
             goto DATA;
@@ -160,11 +162,9 @@ for($s=2;$s<11;$s++){
 }
     
 function base_run($url,$data=0){
-    global $u_c;
-    $r = curl($url,hmc(0,$u_c),$data,true,false);
-    //die(file_put_contents("response_body.html",$r[1]));
-    //$r=file_get_contents("response_body.html");
-    preg_match("#Just a moment#is",$r[1],$cloudflare);
+    $header = head();
+    $r = curl($url,$header,$data,true,false);
+    unset($header);
     preg_match("#(signup|register|signin)#is",$r[1],$register);
     preg_match('#<p class="username">(.*?)</p>#is',$r[1],$username);
     preg_match('#<p class="amount">(.*?)</span>#is',$r[1],$balance);
@@ -179,7 +179,7 @@ function base_run($url,$data=0){
     //die(print_r());
     return [
         "res" => $r[1],
-        "cloudflare" => $cloudflare[0],
+        "status" => $r[0][1]["http_code"],
         "register" => $register[0],
         "username" => $username[1],
         "balance" => strip_tags($balance[1]),
