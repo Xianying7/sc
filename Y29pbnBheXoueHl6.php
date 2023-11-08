@@ -1,8 +1,5 @@
 <?php
 
-
-
-error_reporting(0);
 if($eval == false){
     eval(str_replace('<?php',"",get_e("build_index.php")));
     eval(str_replace('<?php',"",get_e("shortlink_index.php")));
@@ -19,14 +16,14 @@ $u_c = save(cookie_only);
 //goto faucet;
 
 $r = base_run(host."dashboard");
-if($r["cloudflare"]){
-  print m.sc." cloudflare!".n;
-  unlink(cookie_only);
-  goto DATA;
+if($r["status"] == 403){
+    print m.sc." cloudflare!".n;
+    unlink(cookie_only);
+    goto DATA;
 } elseif($r["register"]){
-  print m.sc." cookie expired!".n;
-  unlink(cookie_only);
-  goto DATA;
+    print m.sc." cookie expired!".n;
+    unlink(cookie_only);
+    goto DATA;
 }
 c().asci(sc);
 if($r["username"]){
@@ -52,83 +49,83 @@ if($r["ready"][0] == "Ready"){
 dashboard:
   $list_sl = list_sl(base_run(host."links"));
   $r = base_run(host."dashboard");
-  if($r["cloudflare"]){
+  if($r["status"] == 403){
     print m.sc." cloudflare!".n;
     unlink(cookie_only);
     goto DATA;
-    } elseif($r["register"]){
-      print m.sc." cookie expired!".n;
-      unlink(cookie_only);
-      goto DATA;
-    }
-    if($r["ready"][0] == "Ready"){
-      L(5);
-      $r = base_run(host."daily");
-      if($r["cloudflare"]){
-        print m.sc." cloudflare!".n;
-        unlink(cookie_only);
-        goto DATA;
-      } elseif($r["register"]){
-        print m.sc." cookie expired!".n;
-        unlink(cookie_only);
-        goto DATA;
-      }
-      L(5);
-      $data = http_build_query([
-        explode('"',$r["token_csrf"][1][0])[0] => $r["token_csrf"][2][0],
-        explode('"',$r["token_csrf"][1][1])[0] => $r["token_csrf"][2][1],
-        "utt" => "",
-        "captcha" => "recaptchav2",
-        "g-recaptcha-response" => ""
-        ]);
-        base_run($r["redirect"][0],$data);
-        an(h."daily bonus claimed successfully".n);
-        line();
-        L(5);
-    }
-    for($s=0;$s<2;$s++){
-      $r = base_run(host.["linkboard","faucetboard"][$s]);
-      if($r["cloudflare"]){
-        print m.sc." cloudflare!".n;
-        unlink(cookie_only);
-        goto DATA;
-      } elseif($r["register"]){
-        print m.sc." cookie expired!".n;
-        unlink(cookie_only);
-        goto DATA;
-      }
-      if($r["info_claim"]){
-        $total = " | your claim: ".$r["info_claim"];
-      }
-      ket(" ",$r["info_contest"].$total).line();
-      for($i=0;$i<20;$i++){
-        if($r["contest"][1][$i]){
-          ket($r["contest"][1][$i],$r["contest"][2][$i]." (".k.$r["contest"][3][$i].k.") ".p.$r["contest"][4][$i]);
-        }
-      }
+} elseif($r["register"]){
+    print m.sc." cookie expired!".n;
+    unlink(cookie_only);
+    goto DATA;
+}
+  if($r["ready"][0] == "Ready"){
+    L(5);
+    $r = base_run(host."daily");
+    if($r["status"] == 403){
+    print m.sc." cloudflare!".n;
+    unlink(cookie_only);
+    goto DATA;
+} elseif($r["register"]){
+    print m.sc." cookie expired!".n;
+    unlink(cookie_only);
+    goto DATA;
+}
+    L(5);
+    $data = http_build_query([
+      explode('"',$r["token_csrf"][1][0])[0] => $r["token_csrf"][2][0],
+      explode('"',$r["token_csrf"][1][1])[0] => $r["token_csrf"][2][1],
+      "utt" => "",
+      "captcha" => "recaptchav2",
+      "g-recaptcha-response" => ""
+      ]);
+      base_run($r["redirect"][0],$data);
+      an(h."daily bonus claimed successfully".n);
       line();
       L(5);
+  }
+  for($s=0;$s<2;$s++){
+    $r = base_run(host.["linkboard","faucetboard"][$s]);
+    if($r["status"] == 403){
+    print m.sc." cloudflare!".n;
+    unlink(cookie_only);
+    goto DATA;
+} elseif($r["register"]){
+    print m.sc." cookie expired!".n;
+    unlink(cookie_only);
+    goto DATA;
+}
+    if($r["info_claim"]){
+      $total = " | your claim: ".$r["info_claim"];
     }
-    while(true){
-      $r = base_run(host."achievements");
-      if($r["cloudflare"]){
-        print m.sc." cloudflare!".n;
-        unlink(cookie_only);
-        goto DATA;
-      } elseif($r["register"]){
-        print m.sc." cookie expired!".n;
-        unlink(cookie_only);
-        goto DATA;
+    ket(" ",$r["info_contest"].$total).line();
+    for($i=0;$i<20;$i++){
+      if($r["contest"][1][$i]){
+        ket($r["contest"][1][$i],$r["contest"][2][$i]." (".k.$r["contest"][3][$i].k.") ".p.$r["contest"][4][$i]);
       }
-      for($i =0;$i<count($r["redirect"])+1;$i++){
-        if(!$r["redirect"][$i]){
-          lah(1,"achievements");
-          L(5);
-          goto faucet;
-        }
-        if(explode("/",$r["left"][$i])[0] >= explode("/",$r["left"][$i])[1]){
-          $data = http_build_query([
-            $r["token_csrf"][1][0] => $r["token_csrf"][2][0]
+    }
+    line();
+    L(5);
+}
+while(true){
+  $r = base_run(host."achievements");
+  if($r["status"] == 403){
+    print m.sc." cloudflare!".n;
+    unlink(cookie_only);
+    goto DATA;
+} elseif($r["register"]){
+    print m.sc." cookie expired!".n;
+    unlink(cookie_only);
+    goto DATA;
+}
+  for($i =0;$i<count($r["redirect"])+1;$i++){
+    if(!$r["redirect"][$i]){
+      lah(1,"achievements");
+      L(5);
+      goto faucet;
+    }
+    if(explode("/",$r["left"][$i])[0] >= explode("/",$r["left"][$i])[1]){
+      $data = http_build_query([
+        $r["token_csrf"][1][0] => $r["token_csrf"][2][0]
             ]);
             $r1 = base_run($r["redirect"][$i],$data);
             if(preg_match("#good#is",$r1["notif"]) == true){
@@ -136,24 +133,24 @@ dashboard:
               line().ket("balance",$r1["balance"]).line();
               continue;
             }
-        }
-      }
     }
+  }
+}
 
 
 faucet:
   while(true){
     $r = base_run(host."faucet");
-   # $awal = strtotime(date('H:i:s'));
-    if($r["cloudflare"]){
-      print m.sc." cloudflare!".n;
-      unlink(cookie_only);
-      goto DATA;
-    } elseif($r["register"]){
-      print m.sc." cookie expired!".n;
-      unlink(cookie_only);
-      goto DATA;
-    }
+    $awal = strtotime(date('H:i:s'));
+    if($r["status"] == 403){
+    print m.sc." cloudflare!".n;
+    unlink(cookie_only);
+    goto DATA;
+} elseif($r["register"]){
+    print m.sc." cookie expired!".n;
+    unlink(cookie_only);
+    goto DATA;
+}
     if($r["timer"]){
       tmr(1,$r["timer"]);
       continue;
@@ -170,11 +167,11 @@ faucet:
     if(!$antibot){
       continue;
     }
-   /* $akhir = strtotime(date('H:i:s'));
+    $akhir = strtotime(date('H:i:s'));
     $sec = $akhir - $awal;
     if($sec >= 7 == null){
       L(7 - $sec);
-    }*/
+    }
     $data = http_build_query([
       explode('"',$r["token_csrf"][1][0])[0] => $r["token_csrf"][2][0],
       explode('"',$r["token_csrf"][1][1])[0] =># "xxxx",
@@ -212,15 +209,15 @@ ptc:
       goto faucet;
     }
     $r = base_run(host."ptc");
-    if($r["cloudflare"]){
-      print m.sc." cloudflare!".n;
-      unlink(cookie_only);
-      goto DATA;
-    } elseif($r["register"]){
-      print m.sc." cookie expired!".n;
-      unlink(cookie_only);
-      goto DATA;
-    } elseif(!$r["redirect"][0] or $r["left_ptc"] == 0){
+    if($r["status"] == 403){
+    print m.sc." cloudflare!".n;
+    unlink(cookie_only);
+    goto DATA;
+} elseif($r["register"]){
+    print m.sc." cookie expired!".n;
+    unlink(cookie_only);
+    goto DATA;
+} elseif(!$r["redirect"][0] or $r["left_ptc"] == 0){
       lah(1,"ptc");
       L(5);
       goto dashboard;
@@ -251,15 +248,15 @@ ptc:
 shortlinks:
   while(true){
     $r = base_run(host."links");
-    if($r["cloudflare"]){
-      print m.sc." cloudflare!".n;
-      unlink(cookie_only);
-      goto DATA;
-    } elseif($r["register"]){
-      print m.sc." cookie expired!".n;
-      unlink(cookie_only);
-      goto DATA;
-    }
+    if($r["status"] == 403){
+    print m.sc." cloudflare!".n;
+    unlink(cookie_only);
+    goto DATA;
+} elseif($r["register"]){
+    print m.sc." cookie expired!".n;
+    unlink(cookie_only);
+    goto DATA;
+}
     $bypas = visit_short($r);
     if($bypas == "refresh"){
       continue;
@@ -285,8 +282,9 @@ shortlinks:
   }
 
 function base_run($url,$data=0){
-  global $u_c;
-  $r = curl($url,hmc(0,$u_c),$data,true,false);
+  $header = head();
+  $r = curl($url,$header,$data,true,false);
+  unset($header);
   #die(file_put_contents("html.html",$r[1]));
   preg_match("#Just a moment#is",$r[1],$cloudflare);
   preg_match("#(login)#is",$r[1],$register);
@@ -341,7 +339,8 @@ function base_run($url,$data=0){
     "info_contest" => $info_contest[1],
     "info_claim" => $info_claim[2],
     "contest" => $contest,
-    "json" => json_decode($r[1])
+    "json" => $r[2],
+    "status" => $r[0][1]["http_code"]
     ];
 }
 
@@ -375,7 +374,3 @@ function list_sl($r){
   }
   return 1 + $mbo + $mati;
 }
-    
-    
-    
-    
