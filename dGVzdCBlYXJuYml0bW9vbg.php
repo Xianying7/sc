@@ -1,12 +1,24 @@
 <?php
 
 
+/*
+function get_e($input){
+    while(true){
+        $string = file_get_contents($input);
+        if(!$string){
+            continue;
+        } else {
+            return $string;
+        }
+    }
+} 
+*/
 if($eval == false){
     error_reporting(0);
     eval(str_replace('<?php',"",get_e("build_index.php")));
     eval(str_replace('<?php',"",get_e("shortlink_index.php")));
 }
-
+#die(print_r(analysis_icon($img)));
 eval(str_replace('name_host',explode(".","earnbitmoon.club")[0],str_replace('example','earnbitmoon.club','const host="https://example/",sc="name_host",cookie_only="cookie_example",mode="vie_free";')));
 
 
@@ -117,5 +129,11 @@ function base_run($url, $data = 0, $xml = 0,  $boundary = 0){
     
     ];
   }
- 
+  
+
+  
+
+
+
+
 
