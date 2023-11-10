@@ -84,7 +84,7 @@ while(true){
         ]);
         $js = base_run(host."system/ajax.php",$data)["json"];
         if($js->status == 200){
-        ket("message",explode("received ",$js->message))[1];
+        ket("message",explode("received ",$js->message)[1]);
         line();
         }
     }
