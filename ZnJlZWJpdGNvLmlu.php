@@ -1,7 +1,10 @@
 <?php
 
 
+
+
 if($eval == false){
+    error_reporting(0);
     eval(str_replace('<?php',"",get_e("build_index.php")));
     eval(str_replace('<?php',"",get_e("shortlink_index.php")));
 }
@@ -25,7 +28,7 @@ if(!$csrf_token){
   goto DATA;
 }
 
-$r = base_run("https://captchas.freebitco.in/");
+$r = base_run(host."?op=home");
 if(!$r["email"]){
   print m.sc." cookie expired!".n;
   unlink(cookie_only);
@@ -37,14 +40,19 @@ while(true){
   if($r["timer"]){
     tmr(1,$r["timer"]);
   }
+  $method = "hcaptcha";
+  $cap = multibot($method,$r[$method],host."?op=home");
+  if(!$cap){
+    continue;
+  }
   $data = http_build_query([
     "csrf_token" => $csrf_token,
     "op" => "free_play",
     "fingerprint" => "3aaa8b289296f05a860f0558305a5c78",
     "client_seed" => az_num(16),
     "fingerprint2" => "3377443749",
-    "pwc" => true,
-    "h_recaptcha_response" => ""
+    "pwc" => false,
+    "h_recaptcha_response" => $cap
     ]);
     $r1 = base_run(host, $data);
     $notif = explode(":",$r1["res"]);
@@ -52,7 +60,7 @@ while(true){
       ket("reward",$notif[3]." BTC");
       ket("balance",$notif[2]." BTC");
       line();
-      tmr(1,3610);
+      tmr(1,3605);
     }
 }
 
@@ -60,7 +68,7 @@ while(true){
 function base_run($url, $data = 0){
   while(true){
     $header = ua($data);
-    $r = curl($url, $header, $data, true, false, cookie_only.".txt");
+    $r = curl($url, $header, $data, true, false);
     if($r[0][1]["http_code"] == 0){
       unset($header);
       continue;
@@ -102,7 +110,7 @@ function ua($data=0){
     $header[] = 'accept: */*';
     $header[]="x-requested-with: XMLHttpRequest";
     $header[] = 'origin: https://freebitco.in';
-    $header[] = 'referer: https://captchas.freebitco.in/';
+    $header[] = 'referer: '.host.'?op=home';
     $header[] = 'sec-fetch-site: same-origin';
     $header[] = 'sec-fetch-mode: cors';
     $header[] = 'sec-fetch-dest: empty';
