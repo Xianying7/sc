@@ -1,10 +1,17 @@
 <?php
 
 
+
+
 if($eval == false){
   eval(str_replace('<?php',"",get_e("build_index.php")));
   eval(str_replace('<?php',"",get_e("shortlink_index.php")));
 }
+
+
+
+
+
 go:
 c();
 $web = [
@@ -53,7 +60,7 @@ ket("balance",$r["balance"][0],"value",$r["balance"][1]);
 line();
 print n;
 L(5);
-#goto faucet;
+goto faucet;
 
 if($r["ptc"][1] >= 1){
   goto ptc;
@@ -150,7 +157,7 @@ while(true){
 faucet:
 $path = $r["faucet"][0];
 while(true){
-  $r = base_run(host.$path);
+  $r = base_run(host.$path);#die(print_r($r));
   if($r["status"] == 403){
     print m."cloudflare!".n;
     unlink(cookie_only);
@@ -192,35 +199,68 @@ while(true){
     L(20);
     continue;
   }
-  $method = "recaptchav2";
-  $cap = multibot($method,$r[$method],host);
-  if(!$cap){
+  refresh:
+  if($r["recaptchav2"]){
+    $cap = multibot("recaptchav2",$r["recaptchav2"],host);
+    if(!$cap){
+      continue;
+    }
+    $rsp = [
+      "captcha" => true,
+      "challenge" => false,
+      "response" => $cap
+      ];
+  } elseif($r["hcaptcha"]){
+    $cap = multibot("hcaptcha",$r["hcaptcha"],host);
+    if(!$cap){
+      continue;
+    }
+    $rsp = [
+      "captcha" => true,
+      "challenge" => false,
+      "response" => $cap
+      ];
+  } elseif($r["solvemedia"]){
+    $cap = solvemedia($r["solvemedia"],host);
+    if(!$cap[0]){
+      continue;
+    }
+    $rsp = [
+      "captcha" => false,
+      "challenge" => $cap[1],
+      "response" => $cap[0]
+      ];
+  } else {
+    print "captcha bypass method is missing";
+    r();
     continue;
   }
-  $data = http_build_query([
-    "a" => "getFaucet",
-    "token" => $r["token"],
-    "captcha" => true,
-    "challenge" => false,
-    "response" => $cap
-    ]);
-    $r = base_run(host."system/ajax.php", $data, 1);
-    $js = $r["json"];
-    if(preg_match("#congrat#is",$r["res"])){
-      ket("number",number_format($js->number,0,',',','));
-      ket("reward",$js->reward);
-      line();
-    } else {
-      print m.$js->message.n;
-      line();
+  $data = http_build_query(array_merge(
+    [
+      "a" => "getFaucet",
+      "token" => $r["token"]
+      ],
+      $rsp
+      ));
+      $r = base_run(host."system/ajax.php", $data, 1);
+      $js = $r["json"];
+      unset($cap);
+      unset($rsp);
+      unset($data);
+      if(preg_match("#congrat#is",$r["res"])){
+        ket("number",number_format($js->number,0,',',','));
+        ket("reward",$js->reward);
+        line();
+      } else {
+        if(preg_match("#robot#is",$r["res"])){
+          goto refresh;
+        }
+        print m.$js->message.n;
+        line();
     }
 }
+#Session expired
 
-/*
-captcha=0
-challenge=2@WHx3UGDFc-pSG5USBRCcorQmj9JijaLj
-response=Screw+driver+
-*/
 function base_run($url, $data = 0, $xml = 0){
   global $host;
   $header = head($xml);
@@ -253,6 +293,10 @@ function base_run($url, $data = 0, $xml = 0){
   $array1 = array_combine($cek[4], str_replace(["/", "coinptcter.com", $host],"",$cek[2]));
   $array2 = array_combine($cek[4], $cek[5]);
   #die(print_r(array_merge_recursive($array1, $array2)));
+  
+  if($host == "rushbitcoin.com"){
+    $solvemedia = "WHx3UGDFc-pSG5USBRCcorQmj9JijaLj";
+  }
   print p;
   return array_merge([
     "logout" => $logout,
@@ -265,6 +309,7 @@ function base_run($url, $data = 0, $xml = 0){
     "id" => $id[2],
     "surf_id" => $surf_id,
     "recaptchav2" => $recaptchav2[2],
+    "solvemedia" => $solvemedia,
     "countdown" => $countdown[1],
     "timer" => $tmr[2],
     "visit" => $sl[5],
