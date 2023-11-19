@@ -60,7 +60,7 @@ ket("balance",$r["balance"][0],"value",$r["balance"][1]);
 line();
 print n;
 L(5);
-goto faucet;
+#goto faucet;
 
 if($r["ptc"][1] >= 1){
   goto ptc;
