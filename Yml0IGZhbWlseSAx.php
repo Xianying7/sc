@@ -1,7 +1,6 @@
 <?php
 
 
-
 if($eval == false){
   eval(str_replace('<?php',"",get_e("build_index.php")));
   eval(str_replace('<?php',"",get_e("shortlink_index.php")));
@@ -12,7 +11,10 @@ $web = [
   1 => "ltchunt.com",
   2 => "btccanyon.com",
   3 => "nevcoins.club",
-  4 => "claimbits.net"
+  4 => "claimbits.net",
+  5 => "rushbitcoin.com",
+  6 => "bits-claimer.com",
+  7 => "claimfreecoins.cc"
 ];
 for($i=1;$i<10;$i++){
   if($web[$i]){
@@ -32,7 +34,7 @@ $u_a = save("useragent");
 $u_c = save(cookie_only);
 
 c();
-$r = base_run(host."ptc.html");//die(print_r($r));
+$r = base_run(host."ptc.html");#die(print_r($r));
 if($r["status"] == 403){
   print m."cloudflare!".n;
   unlink(cookie_only);
@@ -49,13 +51,13 @@ ket("balance",$r["balance"][0],"value",$r["balance"][1]);
 line();
 print n;
 L(5);
-goto shortlinks;
+#goto shortlinks;
 
 if($r["ptc"][1] >= 1){
   goto ptc;
 } elseif($r["shortlinks"][1] >= 1){
   goto shortlinks;
-} elseif($r["faucet"][0]){
+} elseif($r["faucet"]){
   goto faucet;
 }
 
@@ -126,7 +128,7 @@ while(true){
     L(5);
     if($r["ptc"][1] >= 1){
       goto ptc;
-    } elseif($r["faucet"][0]){
+    } elseif($r["faucet"]){
       goto faucet;
     }
     tmr(2, min($delay));
@@ -185,6 +187,7 @@ while(true){
       line();
     }
     countdown($r["countdown"]);
+    L(20);
     continue;
   }
   $method = "recaptchav2";
@@ -200,15 +203,21 @@ while(true){
     "response" => $cap
     ]);
     $r = base_run(host."system/ajax.php", $data, 1);
-    if($r["status"] == 200){
-      $js = $r["json"];
+    $js = $r["json"];
+    if(preg_match("#congrat#is",$r["res"])){
       ket("number",number_format($js->number,0,',',','));
       ket("reward",$js->reward);
       line();
+    } else {
+      print m.$js->message.n;
     }
 }
 
-
+/*
+captcha=0
+challenge=2@WHx3UGDFc-pSG5USBRCcorQmj9JijaLj
+response=Screw+driver+
+*/
 function base_run($url, $data = 0, $xml = 0){
   global $host;
   $header = head($xml);
@@ -221,7 +230,7 @@ function base_run($url, $data = 0, $xml = 0){
     $json = $r[2];
   }
   preg_match("#(Keep me logged in for 1 week)#is",$r[1],$logout);
-  preg_match_all('#(font|<div) class="(text-success|text-primary|text-warning)">(.*?)<#is',str_replace("<b>","",$r[1]),$info);
+  preg_match_all('#(font|<div) class="(text-success|text-primary|text-warning)">(.*?)<#is',str_replace("<b>","",$r[1]),$info);#die(print_r($info));
   preg_match("#childWindow=open(.*?)',#is",trimed($r[1]),$surf);
   preg_match('#website_block" id="(.*?)"#is',$r[1],$id);
   if($id[1][0]){
@@ -235,9 +244,10 @@ function base_run($url, $data = 0, $xml = 0){
   preg_match_all('#data-seconds-left="(.*?)"#is',$r[1],$delay);
   preg_match('#(g-recaptcha" data-sitekey=")(.*?)(")#is',$r[1],$recaptchav2);
   preg_match("#Faucet Locked!#is",$r[1],$locked);
-  preg_match_all('#(" href="/([a-z]*.[a-z]*)"><i class="(link|external-link|btc|eye)"></i> (.*?) <span class="badge badge-info">(.*?)</span></a>)#is',str_replace(["view ads","ptc ads"],"ptc",str_replace(["fa fa-"," fa-fw","visit ","http://","https://",$host],"",strtolower($r[1]))),$cek);
- # die(print_r($cek));
-  $array1 = array_combine($cek[4], $cek[2]);
+  preg_match_all('#(" href="([a-z-.\/=?]*)"><i class="(link|external-link|btc|eye)"></i> (.*?) <span class="badge badge-info">(.*?)</span></a>)#is',str_replace(["view ads","ptc ads","ads"],"ptc",str_replace(["fa fa-"," fa-fw","visit ","http://","https://"],"",strtolower($r[1]))),$cek);
+  #die(print_r($cek));
+  #https://bits-claimer.com/?page=ptc
+  $array1 = array_combine($cek[4], str_replace(["/", $host],"",$cek[2]));
   $array2 = array_combine($cek[4], $cek[5]);
   #die(print_r(array_merge_recursive($array1, $array2)));
   print p;
