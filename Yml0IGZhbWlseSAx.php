@@ -14,9 +14,11 @@ $web = [
   4 => "claimbits.net",
   5 => "rushbitcoin.com",
   6 => "bits-claimer.com",
-  7 => "claimfreecoins.cc"
+  7 => "claimfreecoins.cc",
+  8 => "faucetofbob.xyz",
+  9 => "coinadster.com"
 ];
-for($i=1;$i<10;$i++){
+for($i=1;$i<count($web)+1;$i++){
   if($web[$i]){
     ket($i,$web[$i]);
   }
@@ -51,7 +53,7 @@ ket("balance",$r["balance"][0],"value",$r["balance"][1]);
 line();
 print n;
 L(5);
-#goto shortlinks;
+#goto faucet;
 
 if($r["ptc"][1] >= 1){
   goto ptc;
@@ -135,7 +137,7 @@ while(true){
     unset($delay);
     goto ptc;
   }
-  $r1 = base_run($bypas);
+  $r1 = base_run($bypas);#die(file_put_contents("bitmun.html",$r1["res"]));
   if($r1["notif"]){
     $reward = explode("!",$r1["notif"]);
      print h.$reward[0];
@@ -210,6 +212,7 @@ while(true){
       line();
     } else {
       print m.$js->message.n;
+      line();
     }
 }
 
@@ -230,24 +233,24 @@ function base_run($url, $data = 0, $xml = 0){
     $json = $r[2];
   }
   preg_match("#(Keep me logged in for 1 week)#is",$r[1],$logout);
-  preg_match_all('#(font|<div) class="(text-success|text-primary|text-warning)">(.*?)<#is',str_replace("<b>","",$r[1]),$info);#die(print_r($info));
+  preg_match_all('#(font|<div) class="(text-success|text-primary|text-warning)">(.*?)<#is',str_replace(['" id="account_balance',"<b>"],"",$r[1]),$info);#die(print_r($info));
   preg_match("#childWindow=open(.*?)',#is",trimed($r[1]),$surf);
-  preg_match('#website_block" id="(.*?)"#is',$r[1],$id);
-  if($id[1][0]){
-    $surf_id = str_replace("'+a+'",$id[1],str_replace("(base+'/","",$surf[1]));
+  preg_match('#(text-dark|website_block)" id="(.*?)"#is',$r[1],$id);#die(print_r($id));
+  if($id[2]){
+    $surf_id = str_replace("'+a+'",$id[2],str_replace("(base+'/","",$surf[1]));
   }
   preg_match("#([a-z0-9]{64})#is",$r[1],$token);
   preg_match_all("#([0-9]{13})#is",$r[1],$countdown);
-  preg_match('#(var secs = |id="claimTime">)([0-9]{2}|[0-9]{1})(;| h| m| s)#is',$r[1],$tmr);
+  preg_match('#(var secs = |id="claimTime">|id="tai2mer">)([0-9]{2}|[0-9]{1})(;| h| m| s)#is',$r[1],$tmr);
   preg_match_all('#align-middle">(.*?)</td><tdclass="align-middletext-center"><bclass="badgebadge-dark">(.*?)</b></td><tdclass="align-middletext-center"><bclass="badgebadge-dark">(.*?)</b></td><tdclass="(text-right|align-middletext-center)">(.*?)(role|"class=)#is',trimed($r[1]),$sl);
   preg_match('#(successmt-0"|alert-success mt-0" )role="alert">(.*?)<#is',$r[1],$n);
   preg_match_all('#data-seconds-left="(.*?)"#is',$r[1],$delay);
   preg_match('#(g-recaptcha" data-sitekey=")(.*?)(")#is',$r[1],$recaptchav2);
   preg_match("#Faucet Locked!#is",$r[1],$locked);
-  preg_match_all('#(" href="([a-z-.\/=?]*)"><i class="(link|external-link|btc|eye)"></i> (.*?) <span class="badge badge-info">(.*?)</span></a>)#is',str_replace(["view ads","ptc ads","ads"],"ptc",str_replace(["fa fa-"," fa-fw","visit ","http://","https://"],"",strtolower($r[1]))),$cek);
+  preg_match_all('#(" href="([a-z-.\/=?]*)"><i class="(link|external-link|btc|eye)"></i> (.*?) <span class="badge badge-info">(.*?)</span>)#is',str_replace(["view ads","ptc ads","ads"],"ptc",str_replace(["fa fa-"," fa-fw","visit ","http://","https://"],"",strtolower($r[1]))),$cek);
   #die(print_r($cek));
   #https://bits-claimer.com/?page=ptc
-  $array1 = array_combine($cek[4], str_replace(["/", $host],"",$cek[2]));
+  $array1 = array_combine($cek[4], str_replace(["/", "coinptcter.com", $host],"",$cek[2]));
   $array2 = array_combine($cek[4], $cek[5]);
   #die(print_r(array_merge_recursive($array1, $array2)));
   print p;
@@ -259,7 +262,7 @@ function base_run($url, $data = 0, $xml = 0){
     "username" => $info[3][0],
     "balance" => [$info[3][1],$info[3][2]],
     "token" => $token[1],
-    "id" => $id[1],
+    "id" => $id[2],
     "surf_id" => $surf_id,
     "recaptchav2" => $recaptchav2[2],
     "countdown" => $countdown[1],
