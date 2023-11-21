@@ -1,16 +1,10 @@
 <?php
 
 
-
-
-
 if($eval == false){
   eval(str_replace('<?php',"",get_e("build_index.php")));
   eval(str_replace('<?php',"",get_e("shortlink_index.php")));
 }
-
-
-
 
 
 go:
@@ -175,15 +169,18 @@ while(true){
     goto DATA;
   }
   if($r["claim"] >= rand(90,100)){
-  tmr(2, $waktu_awal - time());
-  goto shortlinks;
+    print m."claim limit has reached limit".n;
+    line();
+    tmr(2, $waktu_awal - time());
+    goto shortlinks;
   }
   if(1 >= $waktu_awal - time()){
-  L(5);
-  goto shortlinks;
+    L(5);
+    goto shortlinks;
   }
   if($r["locked"]){
     print m.$r["locked"].n;
+    line();
     tmr(2, min($delay));
     unset($delay);
     goto ptc;
