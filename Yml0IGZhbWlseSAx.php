@@ -208,7 +208,7 @@ while(true){
       line();
     }
     countdown($r["countdown"]);
-    L(20);
+    L(30);
     continue;
   }
   refresh:
