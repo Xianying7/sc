@@ -3,6 +3,7 @@
 
 
 
+
 if($eval == false){
   eval(str_replace('<?php',"",get_e("build_index.php")));
   eval(str_replace('<?php',"",get_e("shortlink_index.php")));
@@ -133,18 +134,22 @@ while(true){
     continue;
   } elseif(!$bypas){
     $delay = $r["delay"];
+    if(!$delay){
+      continue;
+    }
     lah(1,"shortlinks");
     L(5);
     if($r["ptc"][1] >= 1){
       goto ptc;
     } elseif($r["faucet"]){
+      $waktu_awal = time()+min($delay);
       goto faucet;
     }
     tmr(2, min($delay));
     unset($delay);
     goto ptc;
   }
-  $r1 = base_run($bypas);#die(file_put_contents("bitmun.html",$r1["res"]));
+  $r1 = base_run($bypas);
   if($r1["notif"]){
     $reward = explode("!",$r1["notif"]);
      print h.$reward[0];
@@ -154,10 +159,12 @@ while(true){
   }
 }
 
+
 faucet:
 $path = $r["faucet"][0];
 while(true){
-  $r = base_run(host.$path);#die(print_r($r));
+  $r = base_run(host.$path);
+  #die(print_r($r));die(file_put_contents("bitmun.html",$r["res"]));
   if($r["status"] == 403){
     print m."cloudflare!".n;
     unlink(cookie_only);
@@ -166,6 +173,14 @@ while(true){
     print m."cookie expired!".n;
     unlink(cookie_only);
     goto DATA;
+  }
+  if($r["claim"] >= rand(90,100)){
+  tmr(2, $waktu_awal - time());
+  goto shortlinks;
+  }
+  if(1 >= $waktu_awal - time()){
+  L(5);
+  goto shortlinks;
   }
   if($r["locked"]){
     print m.$r["locked"].n;
@@ -288,7 +303,9 @@ function base_run($url, $data = 0, $xml = 0){
   preg_match('#(g-recaptcha" data-sitekey=")(.*?)(")#is',$r[1],$recaptchav2);
   preg_match("#Faucet Locked!#is",$r[1],$locked);
   preg_match_all('#(" href="([a-z-.\/=?]*)"><i class="(link|external-link|btc|eye)"></i> (.*?) <span class="badge badge-info">(.*?)</span>)#is',str_replace(["view ads","ptc ads","ads"],"ptc",str_replace(["fa fa-"," fa-fw","visit ","http://","https://"],"",strtolower($r[1]))),$cek);
-  #die(print_r($cek));
+  preg_match('#(ClaimsToday|claims):(\d+)#is',trimed(strip_tags($r[1])),$claim);
+  #die(strip_tags($r[1]));
+  #die(print_r($claim));
   #https://bits-claimer.com/?page=ptc
   $array1 = array_combine($cek[4], str_replace(["/", "coinptcter.com", $host],"",$cek[2]));
   $array2 = array_combine($cek[4], $cek[5]);
@@ -317,6 +334,7 @@ function base_run($url, $data = 0, $xml = 0){
     "name" => $sl[1],
     "notif" => $n[2],
     "delay" => $delay[1],
+    "claim" => $claim[2],
     "locked" => $locked[0],
     "status" => $r[0][1]["http_code"]
     ], array_merge_recursive($array1, $array2)
