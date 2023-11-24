@@ -123,6 +123,7 @@ while(true){
     unlink(cookie_only);
     goto DATA;
   }
+  $update = $r["balance"][0];
   $bypas = visit_short($r);
   if($bypas == "refresh"){
     continue;
@@ -144,6 +145,7 @@ while(true){
     goto ptc;
   }
   $r1 = base_run($bypas);
+  $update = $r1["balance"][0];
   if($r1["notif"]){
     $reward = explode("!",$r1["notif"]);
      print h.$reward[0];
@@ -287,7 +289,7 @@ function base_run($url, $data = 0, $xml = 0){
   preg_match("#(Keep me logged in for 1 week)#is",$r[1],$logout);
   preg_match_all('#(font|<div) class="(text-success|text-primary|text-warning)">(.*?)<#is',str_replace(['" id="account_balance',"<b>"],"",$r[1]),$info);#die(print_r($info));
   preg_match("#childWindow=open(.*?)',#is",trimed($r[1]),$surf);
-  preg_match('#(text-dark|website_block)" id="(.*?)"#is',$r[1],$id);#die(print_r($id));
+  preg_match('#(text-dark|website_block)" id="([0-9]*)"#is',$r[1],$id);
   if($id[2]){
     $surf_id = str_replace("'+a+'",$id[2],str_replace("(base+'/","",$surf[1]));
   }
