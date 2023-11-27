@@ -66,7 +66,6 @@ while(true){
 
 shortlinks:
 while(true){
-  $time = date("H:i");
   $r = base_run(host."shortlinks");
   if($r["status"] == 403){
     print m."cloudflare!".n;
@@ -114,7 +113,8 @@ while(true){
   if($n == 2){
     unset($data);
   }
-  $start = strtotime($time);
+  date_default_timezone_set('asia/jakarta');
+  $start = strtotime("7:30");
   $stop = strtotime(date("H:i"));
   $diff = ($stop - $start);
   if(explode("-",$diff)[1]){
