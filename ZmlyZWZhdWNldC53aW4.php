@@ -33,7 +33,7 @@ if($x == 1){
   print n;
 }
 if($r["claim_reward"] >= 1){
-  print k."claimed reward levels".n;
+  print k."wait claimed reward levels".n;
   line();
   L(5);
   goto claim_reward;
@@ -113,16 +113,7 @@ while(true){
   if($n == 2){
     unset($data);
   }
-  date_default_timezone_set('asia/jakarta');
-  $start = strtotime("7:30");
-  $stop = strtotime(date("H:i"));
-  $diff = ($stop - $start);
-  if(explode("-",$diff)[1]){
-    $dif = explode("-",$diff)[1];
-  } else {
-    $dif = $diff;
-  }
-  if($fr * 60 >= $dif){
+  if(diff_time(2, "8:00") == 1){
     goto home;
   }
   $r = base_run(host."start", $data);
@@ -193,8 +184,10 @@ function base_run($url, $data = 0){
   }
   preg_match_all('#<input type="hidden" name="(.*?)" value="(.*?)">#is',$r[1],$token);
   preg_match('#retry after ([0-9]*) seconds#is',$r[1],$timer);
+  
   preg_match("#(Dont have an account?)#is",$r[1],$account);
   preg_match_all('#(Welcome,</div> |1d202b"><b>)(.*?)<#is',$r[1],$info);
+  #preg_match('#class="success_msg hoverable"><b>(.*?)</div>#is',$r[1],$account);
   preg_match('#class="(error_msg hoverable|success_msg hoverable)">(.*?)</div>#is',$r[1],$notif);
   preg_match('#Claim Rewards (.*?)<#is',$r[1],$claim_reward);
   preg_match('#<a href="/(levels?[a-zA-Z0-9-=?&]*claim[a-zA-Z0-9-=&]*)#is',$r[1],$claim_level);
@@ -230,5 +223,3 @@ function head_fire(){
   }
   return $header;
 }
-
-
