@@ -128,17 +128,8 @@ for($s=2;$s<11;$s++){
     }
     
     while(true){
-        date_default_timezone_set('asia/jakarta');
-        $start = strtotime($tg.":30");
-        $stop = strtotime(date("H:i"));
-        $diff = ($stop - $start);
-        if(explode("-",$diff)[1]){
-            $dif = explode("-",$diff)[1];
-        } else {
-            $dif = $diff;
-        }
-        if($fr * 60 >= $dif){
-            goto shortlinks;
+        if(diff_time($fr, $tg.":30") == 1){
+          goto shortlinks;
         }
         $r3 = base_run(host."dashboard/claim/auto/start");
         if($r3["status"] == 403){
