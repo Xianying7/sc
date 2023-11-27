@@ -1,7 +1,5 @@
 <?php
 
-
-
 if($eval == false){
   eval(str_replace('<?php',"",get_e("build_index.php")));
   eval(str_replace('<?php',"",get_e("shortlink_index.php")));
@@ -15,6 +13,9 @@ $u_a = save("useragent");
 $u_c = save(cookie_only);
 
 c();
+$x = 0;
+home:
+$x++;
 $r = base_run(host);#die(print_r($r));
 if($r["status"] == 403){
   print m."cloudflare!".n;
@@ -25,17 +26,48 @@ if($r["status"] == 403){
   unlink(cookie_only);
   goto DATA;
 }
-c().asci(sc).ket("username",$r["username"]);
-ket("balance",$r["balance"]);
-line();
-print n;
+if($x == 1){
+  c().asci(sc).ket("username",$r["username"]);
+  ket("balance",$r["balance"]);
+  line();
+  print n;
+}
+if($r["claim_reward"] >= 1){
+  print k."claimed reward levels".n;
+  line();
+  L(5);
+  goto claim_reward;
+}
 
+
+claim_reward:
+while(true){
+  $r = base_run(host."levels");#die(print_r($r));
+  if($r["status"] == 403){
+    print m."cloudflare!".n;
+    unlink(cookie_only);
+    goto DATA;
+  } elseif($r["account"]){
+    print m."cookie expired!".n;
+    unlink(cookie_only);
+    goto DATA;
+  } elseif(!$r["claim_level"]){
+    goto shortlinks;
+  }
+  L(5);
+  $r1 = base_run(host.$r["claim_level"]);
+  if(preg_match('#suc#is',$r1["notif"])){
+    print text_line(h.$r1["notif"]);
+  } else {
+    print m.$r1["notif"];
+    r();
+  }
+}
 
 shortlinks:
 while(true){
   $time = date("H:i");
-  $r = base_run(host."shortlinks");#die(print_r($r));
-  #die(file_put_contents("bitmun.html",$r["res"]));
+  $r = base_run(host."shortlinks");
   if($r["status"] == 403){
     print m."cloudflare!".n;
     unlink(cookie_only);
@@ -52,9 +84,12 @@ while(true){
     goto auto;
   }
   $r1 = base_run($bypas);
-  if($r1["notif"]){
+  if(preg_match('#suc#is',$r1["notif"])){
     print h.$r1["notif"].n;
     line();
+  } else {
+    print m.$r1["notif"];
+    r();
   }
 }
 
@@ -88,7 +123,7 @@ while(true){
     $dif = $diff;
   }
   if($fr * 60 >= $dif){
-    goto shortlinks;
+    goto home;
   }
   $r = base_run(host."start", $data);
   if($r["status"] == 403){
@@ -158,11 +193,12 @@ function base_run($url, $data = 0){
   }
   preg_match_all('#<input type="hidden" name="(.*?)" value="(.*?)">#is',$r[1],$token);
   preg_match('#retry after ([0-9]*) seconds#is',$r[1],$timer);
-  
-  preg_match("#(Dont have an account?)#is",$r[1],$login);
+  preg_match("#(Dont have an account?)#is",$r[1],$account);
   preg_match_all('#(Welcome,</div> |1d202b"><b>)(.*?)<#is',$r[1],$info);
-  preg_match('#class="success_msg hoverable"><b>(.*?)</div>#is',$r[1],$account);
   preg_match('#class="(error_msg hoverable|success_msg hoverable)">(.*?)</div>#is',$r[1],$notif);
+  preg_match('#Claim Rewards (.*?)<#is',$r[1],$claim_reward);
+  preg_match('#<a href="/(levels?[a-zA-Z0-9-=?&]*claim[a-zA-Z0-9-=&]*)#is',$r[1],$claim_level);
+  #die(print_r($claim_level));
   print p;
   return array_merge($combine, [
     "account" => $account,
@@ -176,6 +212,8 @@ function base_run($url, $data = 0){
     "token" => $token,
     "timer" => $timer[1],
     "notif" => strip_tags($notif[2]),
+    "claim_reward" => preg_replace("/[^0-9]/","",$claim_reward[1]),
+    "claim_level" => $claim_level[1],
     "url" => $r[0][0]["location"],
     "code" => $code
     ]);
