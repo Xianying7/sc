@@ -230,7 +230,7 @@ while(true){
   if($n == 2){
     unset($data);
   }
-  if(diff_time(2, "8:00") == 1){
+  if(diff_time(2, "7:01") == 1){
     goto home;
   }
   $r = base_run(host."start", $data);
