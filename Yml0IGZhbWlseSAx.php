@@ -303,7 +303,7 @@ function base_run($url, $data = 0, $xml = 0){
   }
   preg_match("#([a-z0-9]{64})#is",$r[1],$token);
   preg_match_all("#([0-9]{13})#is",$r[1],$countdown);
-  preg_match('#(var secs = |id="claimTime">|id="tai2mer">)([0-9]{2}|[0-9]{1})(;| h| m| s)#is',$r[1],$tmr);
+  preg_match('#(var secs = |id="claimTime">|id="tai2mer">)([0-9]{3}|[0-9]{2}|[0-9]{1})(;| h| m| s)#is',$r[1],$tmr);
   preg_match_all('#align-middle">(.*?)</td><tdclass="align-middletext-center"><bclass="badgebadge-dark">(.*?)</b></td><tdclass="align-middletext-center"><bclass="badgebadge-dark">(.*?)</b></td><tdclass="(text-right|align-middletext-center)">(.*?)(role|"class=)#is',trimed($r[1]),$sl);
   preg_match('#(successmt-0"|alert-success mt-0" )role="alert">(.*?)<#is',$r[1],$n);
   preg_match_all('#data-seconds-left="(.*?)"#is',$r[1],$delay);
