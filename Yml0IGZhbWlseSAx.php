@@ -17,8 +17,7 @@ $web = [
   5 => "rushbitcoin.com",
   6 => "bits-claimer.com",
   7 => "claimfreecoins.cc",
-  8 => "faucetofbob.xyz",
-  9 => "coinadster.com"
+  8 => "faucetofbob.xyz"
 ];
 for($i=1;$i<count($web)+1;$i++){
   if($web[$i]){
@@ -38,38 +37,41 @@ $u_a = save("useragent");
 $u_c = save(cookie_only);
 
 c();
-$r = base_run(host."ptc.html");#die(print_r($r));
-if($r["status"] == 403){
+$home = base_run(host."ptc.html");#die(print_r($home));
+if($home["status"] == 403){
   print m."cloudflare!".n;
   unlink(cookie_only);
   goto DATA;
-} elseif($r["logout"]){
+} elseif($home["logout"]){
   print m."cookie expired!".n;
   unlink(cookie_only);
   goto DATA;
 }
 
-$update = $r["balance"][0];
-c().asci(sc).ket("username",$r["username"]);
-ket("balance",$r["balance"][0],"value",$r["balance"][1]);
+$update = $home["balance"][0];
+c().asci(sc).ket("username",$home["username"]);
+ket("balance",$home["balance"][0],"value",$home["balance"][1]);
 line();
 print n;
 L(5);
 #goto faucet;
 
-if($r["ptc"][1] >= 1){
+if($home["ptc"][1] >= 1){
   goto ptc;
-} elseif($r["shortlinks"][1] >= 1){
+} elseif($home["shortlinks"][1] >= 1){
   goto shortlinks;
-} elseif($r["faucet"]){
+} elseif($home["faucet"]){
   goto faucet;
 }
 
 
 ptc:
-$path = $r["ptc"][0];
+$ptc = $home["ptc"][0];
+if(!$ptc){
+  $ptc = $r["ptc"][0];
+}
 while(true){
-  $r = base_run(host.$path);
+  $r = base_run(host.$ptc);
   if($r["status"] == 403){
     print m."cloudflare!".n;
     unlink(cookie_only);
@@ -111,9 +113,12 @@ while(true){
 
 
 shortlinks:
-$path = $r["shortlinks"][0];
+$links = $home["shortlinks"][0];
+if(!$links){
+  $links = $r["shortlinks"][0];
+}
 while(true){
-  $r = base_run(host.$path);
+  $r = base_run(host.$links);
   if($r["status"] == 403){
     print m."cloudflare!".n;
     unlink(cookie_only);
@@ -157,9 +162,12 @@ while(true){
 
 
 faucet:
-$path = $r["faucet"][0];
+$faucet = $home["faucet"][0];
+if(!$faucet){
+  $faucet = $r["faucet"][0];
+}
 while(true){
-  $r = base_run(host.$path);
+  $r = base_run(host.$faucet);
   #die(print_r($r));die(file_put_contents("bitmun.html",$r["res"]));
   if($r["status"] == 403){
     print m."cloudflare!".n;
