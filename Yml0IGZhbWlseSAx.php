@@ -36,6 +36,7 @@ DATA:
 $u_a = save("useragent");
 $u_c = save(cookie_only);
 
+home:
 c();
 $home = base_run(host."ptc.html");#die(print_r($home));
 if($home["status"] == 403){
@@ -47,6 +48,13 @@ if($home["status"] == 403){
   unlink(cookie_only);
   goto DATA;
 }
+if($home["ptc"] || $home["shortlinks"] || $home["faucet"]){
+  print "ok";
+  r();
+} else {
+  goto home;
+}
+
 
 $update = $home["balance"][0];
 c().asci(sc).ket("username",$home["username"]);
