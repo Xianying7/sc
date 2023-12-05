@@ -75,8 +75,8 @@ dashboard:
       explode('"',$r["token_csrf"][1][0])[0] => $r["token_csrf"][2][0],
       explode('"',$r["token_csrf"][1][1])[0] => $r["token_csrf"][2][1],
       "utt" => "",
-      "captcha" => "recaptchav2",
-      "g-recaptcha-response" => ""
+      "captcha" => "recaptchav3",
+      "recaptchav3" => ""
       ]);
       base_run($r["redirect"][0],$data);
       an(h."daily bonus claimed successfully".n);
@@ -178,8 +178,8 @@ faucet:
       $r["token_csrf"][2][1],
       "antibotlinks" => $antibot,
       "utt" => "",
-      "captcha" => "recaptchav2",
-      "g-recaptcha-response" => ""
+      "captcha" => "recaptchav3",
+      "recaptchav3" => ""
       ]);
       $r1 = base_run($r["redirect"][0],$data);
       if(preg_match("#good#is",$r1["notif"]) == true){
@@ -229,8 +229,8 @@ ptc:
     tmr(2,$r1["timer"]);
     $data = http_build_query([
       "utt" => "",
-      "captcha" => "recaptchav2",
-      "g-recaptcha-response" => "",
+      "captcha" => "recaptchav3",
+      "recaptchav3" => "",
       explode('"',$r1["token_csrf"][1][0])[0] => $r1["token_csrf"][2][0],
       explode('"',$r1["token_csrf"][1][1])[0] => $r1["token_csrf"][2][1]
       ]);
