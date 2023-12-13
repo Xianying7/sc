@@ -1,6 +1,7 @@
 <?php
 
 
+
 if($eval == false){
   eval(str_replace('<?php',"",get_e("build_index.php")));
   eval(str_replace('<?php',"",get_e("shortlink_index.php")));
@@ -29,6 +30,7 @@ line();
 print n;
 
 while(true){
+$u_c = save(cookie_only);
 $r = base_run(host."member/task/sitefriends");
 if($r["status"] == 403){
   print m."cloudflare!".n;
@@ -72,7 +74,37 @@ if($r1["status"] == 403){
   goto DATA;
 }
 if(!$r1['param'][1]){
-die("hcaptcha");
+print("bypass hcaptcha".n);
+$r = base_run("https://my.dropz.xyz/member/check-point?redirect=http%3A%2F%2Fmy.dropz.xyz%2Fmember%2Ftask%2Fsitefriends");
+
+$cap = multibot("hcaptcha","5cb93c93-ed2d-4f52-bcbb-9a896cc6b071",host."member/task/sitefriends");
+$data = json_encode([
+  '_token' => $r["csrf"],
+  'components' => [
+    [
+      'snapshot' => $r["data_begal"],
+      'updates' => json_decode('{}'),
+      'calls' => [
+        [
+          'path' => '',
+          'method' => '__dispatch',
+          'params' => [
+            'validate-session',
+            [
+            'hCaptchaResponse' => $cap,
+            'redirect' => 'http://my.dropz.xyz/member/task/sitefriends'
+            ]
+          ]
+        ]
+      ]
+    ]
+  ]
+]);
+$r1 = base_run(host."livewire/update", 1, $data);
+unlink(cookie_only);
+file_put_contents(cookie_only, $r1["cookie"].$u_c);
+unset($u_c);
+continue;
 }
 base_run(host."member/external/visit/".$r1['param'][2]."/".$r1['param'][1]);
 L(15);
@@ -127,7 +159,7 @@ function base_run($url, $js = 0, $data = 0){
   }
   preg_match_all('#(class="font-weight-bold">Hi, |class="mb-0 font-weight-bold">)(.*?)<#is',$r[1],$info);
   preg_match_all('#(title|message)":"(.*?)"#is',$r[1],$notif);  
-  if($node["snapshot"]){#print_r($node["snapshot"]);
+  if($node["snapshot"]){#die(print_r($node["snapshot"]));
     for($i=0;$i<count($node["snapshot"]);$i++){
       if(preg_match('#"user":#is',$node["snapshot"][$i])){
         $data_user = $node["snapshot"][$i];
@@ -135,12 +167,16 @@ function base_run($url, $js = 0, $data = 0){
       if(preg_match('#"clicksAvailable":#is',$node["snapshot"][$i])){
         $data_visit = $node["snapshot"][$i];
       }
+      if(preg_match('#"auth.checkpoint.main"#is',$node["snapshot"][$i])){
+        $data_begal = $node["snapshot"][$i];
+      }
     }
   }
-  #"clicksAvailable"
-  #die(print_r($data_visit));
+  #"memo":{"id
+  #die(print_r($data_begal));
   print p;
   return [
+    "cookie" => set_cookie($r[0][2]),
     "res" => $r[1],
     "json" => json_decode($r[1])->components[0]->effects->html,
     "username" => $info[2][0],
@@ -150,6 +186,8 @@ function base_run($url, $js = 0, $data = 0){
     "user_token" => $node["user_token"],
     "data_user" => $data_user,
     "data_visit" => $data_visit,
+    "data_begal" => $data_begal,
+    "vghhh" => $node["snapshot"],
     "param" => $j->dispatches[0]->params[0]->param,
     "notif" => $notif[2][0]." ".$notif[2][1],
     "status" => $r[0][1]["http_code"]
@@ -173,4 +211,3 @@ accept: */*';
     $headers[] = 'cookie: '.$u_c;
     return $headers;
 }
-
