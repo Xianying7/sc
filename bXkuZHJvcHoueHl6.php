@@ -72,11 +72,16 @@ if($r1["status"] == 403){
   continue;
 }
 if(!$r1['param'][1]){
-print("bypass hcaptcha".n);
 $r = base_run("https://my.dropz.xyz/member/check-point?redirect=http%3A%2F%2Fmy.dropz.xyz%2Fmember%2Ftask%2Fsitefriends");
-if(!$r["data_begal"]){
+if($r["status"] == 403){
+  print m."cloudflare!".n;
+  unlink(cookie_only);
+  goto DATA;
+} elseif($r["status"] >= 201){
   continue;
 }
+
+print("bypass hcaptcha".n);
 $cap = multibot("hcaptcha","5cb93c93-ed2d-4f52-bcbb-9a896cc6b071",host."member/task/sitefriends");
 $data = json_encode([
   '_token' => $r["csrf"],
