@@ -20,6 +20,8 @@ if($r["status"] == 403){
   unlink(cookie_only);
   goto DATA;
 } elseif($r["status"] >= 201){
+  goto DATA;
+} elseif(!$r["username"]){
   print m."cookie expired!".n;
   unlink(cookie_only);
   goto DATA;
@@ -37,9 +39,7 @@ if($r["status"] == 403){
   unlink(cookie_only);
   goto DATA;
 } elseif($r["status"] >= 201){
-  print m."cookie expired!".n;
-  unlink(cookie_only);
-  goto DATA;
+  continue;
 } elseif($notif == true){
   ket("balance",$r["balance"],"drops",$r["drops"]);
   line();
@@ -69,14 +69,14 @@ if($r1["status"] == 403){
   unlink(cookie_only);
   goto DATA;
 } elseif($r1["status"] >= 201){
-  print m."cookie expired!".n;
-  unlink(cookie_only);
-  goto DATA;
+  continue;
 }
 if(!$r1['param'][1]){
 print("bypass hcaptcha".n);
 $r = base_run("https://my.dropz.xyz/member/check-point?redirect=http%3A%2F%2Fmy.dropz.xyz%2Fmember%2Ftask%2Fsitefriends");
-
+if(!$r["data_begal"]){
+  continue;
+}
 $cap = multibot("hcaptcha","5cb93c93-ed2d-4f52-bcbb-9a896cc6b071",host."member/task/sitefriends");
 $data = json_encode([
   '_token' => $r["csrf"],
@@ -101,8 +101,12 @@ $data = json_encode([
   ]
 ]);
 $r1 = base_run(host."livewire/update", 1, $data);
+if($r1["status"] >= 201){
+  continue;
+}
 unlink(cookie_only);
-file_put_contents(cookie_only, $r1["cookie"].$u_c);
+$new_cookie = new_cookie($u_c, $r1["cookie"]);
+file_put_contents(cookie_only, $new_cookie);
 unset($u_c);
 continue;
 }
@@ -178,7 +182,7 @@ function base_run($url, $js = 0, $data = 0){
   return [
     "cookie" => set_cookie($r[0][2]),
     "res" => $r[1],
-    "json" => json_decode($r[1])->components[0]->effects->html,
+    "json" => $j->html,
     "username" => $info[2][0],
     "balance" => $info[2][1],
     "drops" => $info[2][2],
