@@ -127,7 +127,18 @@ function base_run($url, $js = 0, $data = 0){
   }
   preg_match_all('#(class="font-weight-bold">Hi, |class="mb-0 font-weight-bold">)(.*?)<#is',$r[1],$info);
   preg_match_all('#(title|message)":"(.*?)"#is',$r[1],$notif);  
-  
+  if($node["snapshot"]){#print_r($node["snapshot"]);
+    for($i=0;$i<count($node["snapshot"]);$i++){
+      if(preg_match('#"user":#is',$node["snapshot"][$i])){
+        $data_user = $node["snapshot"][$i];
+      }
+      if(preg_match('#"clicksAvailable":#is',$node["snapshot"][$i])){
+        $data_visit = $node["snapshot"][$i];
+      }
+    }
+  }
+  #"clicksAvailable"
+  #die(print_r($data_visit));
   print p;
   return [
     "res" => $r[1],
@@ -137,8 +148,8 @@ function base_run($url, $js = 0, $data = 0){
     "drops" => $info[2][2],
     "csrf" => $node["csrf"],
     "user_token" => $node["user_token"],
-    "data_user" => $node["snapshot"][1],
-    "data_visit" => $node["snapshot"][4],
+    "data_user" => $data_user,
+    "data_visit" => $data_visit,
     "param" => $j->dispatches[0]->params[0]->param,
     "notif" => $notif[2][0]." ".$notif[2][1],
     "status" => $r[0][1]["http_code"]
