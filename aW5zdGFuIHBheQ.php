@@ -1,17 +1,37 @@
 <?php
 
-
 if($eval == false){
   eval(str_replace('<?php',"",get_e("build_index.php")));
   eval(str_replace('<?php',"",get_e("shortlink_index.php")));
 }
 
-eval(str_replace('name_host',explode(".","freeltc.fun")[0],str_replace('example','freeltc.fun','const host="https://example/",sc="name_host",cookie_only="cookie_example",mode="vie_free";')));
+go_home:
+c();
+$web = [
+  "cryptofuture.co.in",
+  "freeltc.fun",
+//  "earnsolana.xyz",
+  ];
+  
+for($i=0;$i<count($web);$i++){
+  if($web[$i]){
+    ket($i+1,$web[$i]);
+  }
+}
 
+$p = preg_replace("/[^0-9]/","",trim(tx("number")));
+$host = $web[$p-1];
+if(!$host){
+  goto go_home;
+}
+
+
+eval(str_replace('name_host',explode(".",$host)[0],str_replace('example',$host,'const host="https://example/",sc="name_host",cookie_only="cookie_example",mode="vie_free";')));
+#die(print_r(curl($url,["referer:".$referer],0,true)));
 
 DATA:
-$email = save("email");;
-  
+$email = save("email");
+
 $r = base_run(host);
 if(!$r["login"]){
   goto home;
@@ -144,4 +164,4 @@ function base_run($url, $data = 0){
      "notif" => $nn[2][0].$nn[2][1]
      ], $methode);
 }
-  
+
