@@ -3,15 +3,18 @@
 
 
 
+
+
+
 if($eval == false){
   eval(str_replace('<?php',"",get_e("build_index.php")));
   eval(str_replace('<?php',"",get_e("shortlink_index.php")));
 }
 
-
 go:
 c();
 $web = [
+  "keforcash.com",
   "claimcoin.in",
   "freebinance.top",
   "faucetcrypto.net",
@@ -20,7 +23,7 @@ $web = [
   "litefaucet.in",
   #"litecoinline.com",
   "uclicka.com",
-  #"cryptoviefaucet.com",#bug
+  "cryptoviefaucet.com",#bug
   "coinsfaucet.xyz",
   #*"earnbtc.pw",
   #"claimbitco.in",
@@ -121,7 +124,7 @@ while(true){
     L(5);
     goto auto;
   }
-  $r1 = base_run($bypas);
+  $r1 = base_run($bypas);#die(file_put_contents("response_body.html",$r1["res"]));
   if($r1["fireywall"]){
     print m."Firewall!";
     r();
@@ -408,21 +411,23 @@ function base_run($url,$data=0){
   preg_match('#"g-recaptcha" data-sitekey="(.*?)"#is',$r[1],$recaptchav2);
   preg_match('#h-captcha" data-sitekey="(.*?)"#is',$r[1],$hcaptcha);
   preg_match('#grecaptcha.execute"(.*?)"#is',str_replace("(","",$r[1]),$recaptchav3);
-  preg_match('#(key="t-henry">|class="font-size-15 text-truncate">)(.*?)(<)#is',str_replace("#","",$r[1]),$username);
-  preg_match('#(class="fas fa-coins"></i> |Balance</p>)(.*?)(</p>|</h4>|</h5>)#is',$r[1],$balance);
+  preg_match('#(fw-semibold">|key="t-henry">|class="font-size-15 text-truncate">)(.*?)(<)#is',str_replace("#","",$r[1]),$username);
+  preg_match('#(class="mb-0 number-font">|class="fas fa-coins"></i> |Balance</p>)(.*?)(</h2>|</p>|</h4>|</h5>)#is',$r[1],$balance);
   //die(print_r($balance));
   //die(print_r(ltrim(strip_tags($balance[2]))));
   preg_match_all('#hidden" name="(.*?)" value="(.*?)"#',str_replace('name="anti','',$r[1]),$t_cs);
   #die(print_r($t_cs));
   
   preg_match('#(timer|wait*)( = *)(\d+)#is',$r[1],$tmr);
-  preg_match_all('#(class="card-claim"><h5>|titletext-center">|card-titlemt-0">|margin-bottom:0px;">|class="link-name">|class="card-title">)(.*?)(<)#is',trimed($r[1]),$x);
+  preg_match_all('#(class="card-titlemx-auto">|class="card-claim"><h5>|titletext-center">|card-titlemt-0">|margin-bottom:0px;">|class="link-name">|class="card-title">)(.*?)(<)#is',trimed($r[1]),$x);
   preg_match_all('#(https?:\/\/[a-zA-Z0-9\/-\/.-]*\/go\/?[a-zA-Z0-9\/-\/.]*)(.*?)#is',$r[1],$y);
   preg_match_all('#(>| )(\d+\/+\d+)#is', str_replace(str_split('({['),'',$r[1]),$z);
   preg_match("/\b(?:(?:https?|ftp):\/\/|www\.)[-a-z0-9+&@#\/%?=~_|!:,.;]*[-a-z0-9+&@#\/%=~_|]/i",$r[1],$u_r);
   preg_match_all("#(https?:\/\/".sc."[a-z\/.]*)(\/auto|\/faucet|\/ptc|\/links)#is",$r[1],$link);
   //die(print_r(array_merge(array_unique($link[0]))));
-  preg_match('#(Swal.fire)(.*?)(<)#is',$r[1],$n);
+ # swal('Good job!', '0.002 USDT has been added to your balance', 'success')
+  preg_match('#(Swal.fire|swal)(.*?)(<)#is',$r[1],$n);
+  #preg_match('#(Swal.fire)(.*?)(<)#is',$r[1],$n);
   preg_match_all('#(title|text):(.*?)(,)#is',$r[1],$nn);
   if(!$n[2]){
     $n[2] = $nn[2][0].$nn[2][1];
@@ -435,6 +440,7 @@ function base_run($url,$data=0){
   return [
     "status" => $r[0][1]["http_code"],
     "res" => $r[1],
+    "register" => $register[1],
     "cookie" => $cek_cookie,
     "cloudflare" => $cf,
     "firewall" => $firewall[0],
