@@ -1,7 +1,6 @@
 <?php
 
 
-
 if($eval == false){
   eval(str_replace('<?php',"",get_e("build_index.php")));
   eval(str_replace('<?php',"",str_replace("L(90)","L(30)",get_e("shortlink_index.php"))));
@@ -50,10 +49,13 @@ while(true){
   if($r["hash"]){
     continue;
   }
+  ket("",$r["url"]);
   $bypass = bypass_shortlinks($r["url"]);
   if(!$bypass){
     continue;
   }
+  if(preg_match("#".host."#is",$bypass)){
+    
   $r = base_run($bypass);
   if(preg_match("#sent#is",$r["notif"])){
     print h.$r["notif"].n;
@@ -62,7 +64,7 @@ while(true){
   }
 }
 
-
+}
 function base_run($url, $data = 0){
   $header = head();
   $r = curl($url,$header,$data,true,cookie_only);
