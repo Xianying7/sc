@@ -10,7 +10,7 @@ c();
 $web = [
   "cryptofuture.co.in",
   "freeltc.fun",
-//  "earnsolana.xyz",
+  "earnsolana.xyz",
   ];
   
 for($i=0;$i<count($web);$i++){
