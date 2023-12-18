@@ -21,3 +21,4 @@ if($key[1]){
 } else {
   print m."invalid save key to file key_scrape".n;
 }
+die();
