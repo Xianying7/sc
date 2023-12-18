@@ -1,5 +1,7 @@
 <?php
 
+
+
 if($eval == false){
   eval(str_replace('<?php',"",get_e("build_index.php")));
   eval(str_replace('<?php',"",get_e("shortlink_index.php")));
@@ -97,6 +99,7 @@ while(true){
      if($r1["login"]){
        continue;
      }
+     lah(2,"shortlinks");
      goto home;
    }
    $r1 = base_run($bypass);
