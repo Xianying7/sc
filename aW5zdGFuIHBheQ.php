@@ -122,7 +122,7 @@ while(true){
 
 
 function base_run($url, $data = 0){
-  $header = head();
+  $header = ["user-agent: ".user_agent()];
   $r = curl($url,$header,$data,true,cookie_only);
   unset($header);
   #$r[1] = file_get_contents("response_body.html");
