@@ -14,7 +14,7 @@ $web = [
   "freeltc.fun",
   "earnsolana.xyz",
   "claim88.fun",
-  "EARNCRYPTOWRS.IN"
+  "earncryptowrs.in"
   ];
   
 for($i=0;$i<count($web);$i++){
