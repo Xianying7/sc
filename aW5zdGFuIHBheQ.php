@@ -13,6 +13,7 @@ $web = [
   "cryptofuture.co.in",
   "freeltc.fun",
   "earnsolana.xyz",
+  "claim88.fun"
   ];
   
 for($i=0;$i<count($web);$i++){
