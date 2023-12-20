@@ -37,7 +37,9 @@ DATA:
 $email = save("email");
 
 $r = base_run(host);
-if(!$r["login"]){
+if($r["status"] == 403){
+  die(m."banned IP please airplane mode for a moment");
+} elseif(!$r["login"]){
   goto home;
 }
 $t = $r["token"];
@@ -86,7 +88,9 @@ if($pil == 1){
 links:
 while(true){
   $r1 = base_run($link);
-  if($r1["login"]){
+  if($r1["status"] == 403){
+  die(m."banned IP please airplane mode for a moment");
+  } elseif($r1["login"]){
     unlink(cookie_only);
     goto DATA;
   } elseif($r1["empty"]){
@@ -166,7 +170,8 @@ function base_run($url, $data = 0){
      "visit" => $visit[0],
      "left" => $left[1],
      "url1" => $r[0][0]["location"],
-     "notif" => $nn[2][0].$nn[2][1]
+     "notif" => $nn[2][0].$nn[2][1],
+     "status" => $r[0][1]["http_code"]
      ], $methode);
 }
 
