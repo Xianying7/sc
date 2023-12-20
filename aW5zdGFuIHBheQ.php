@@ -89,7 +89,7 @@ while(true){
   if($r1["login"]){
     unlink(cookie_only);
     goto DATA;
-  } elseif(!$r1["ready"]){
+  } elseif($r1["empty"]){
     print m."devnya Rungkat ganti coin aja".n;
     goto go;
   }
@@ -132,7 +132,7 @@ function base_run($url, $data = 0){
     $json = $r[2];
   }
   preg_match("#Enter Your Faucet#is",$r[1],$login);
-  preg_match("#Ready<#is",$r[1],$ready);
+  preg_match("#empty<#is",$r[1],$empty);
   preg_match_all('#<input type="hidden" name="(.*?)" id="token" value="(.*?)">#is',str_replace('name="anti','',$r[1]),$token);
   preg_match_all('#(title|html):(.*?)(,)#is',str_replace("'","",$r[1]),$nn);
   if(preg_match_all('#<a class="collapse-item" href="(.*?)">(.*?)</a>#is',$r[1],$coin)){
@@ -159,7 +159,7 @@ function base_run($url, $data = 0){
    print p;
    return array_merge([
      "login" => $login[0],
-     "ready" => $ready[0],
+     "empty" => $empty[0],
      "res" => $r[1],
      "token" => $token,
      "name" => $name[1],
