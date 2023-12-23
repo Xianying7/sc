@@ -1,6 +1,7 @@
 <?php
 
 
+
 if($eval == false){
   eval(str_replace('<?php',"",get_e("build_index.php")));
   eval(str_replace('<?php',"",get_e("shortlink_index.php")));
@@ -107,7 +108,7 @@ while(true){
     goto go;
   }
   $t = time()+90;
-  $bypass = visit_short($r1, $cancel); print($bypass.n);
+  $bypass = visit_short($r1, $cancel); //print($bypass.n);
   if($bypass == "refresh"){
      continue;
    } elseif(!$bypass){
@@ -124,7 +125,7 @@ while(true){
    $t1 = time();
    if($t - $t1 >= 1){
      L($t - $t1);
-   } print "timer".$t - $t1.n.n;
+   }// print "timer".$t - $t1.n.n;
    $r1 = base_run($bypass);#die(print_r($r1));
    if($r1["login"]){
      continue;
