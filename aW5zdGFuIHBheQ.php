@@ -1,7 +1,6 @@
 <?php
 
 
-
 if($eval == false){
   eval(str_replace('<?php',"",get_e("build_index.php")));
   eval(str_replace('<?php',"",get_e("shortlink_index.php")));
@@ -108,7 +107,7 @@ while(true){
     goto go;
   }
   $t = time()+90;
-  $bypass = visit_short($r1, $cancel); //print($bypass.n);
+  $bypass = visit_short($r1, $cancel);
   if($bypass == "refresh"){
      continue;
    } elseif(!$bypass){
@@ -117,16 +116,16 @@ while(true){
        continue;
      }
      lah(2,"shortlinks");
+     if($host == "claimcoins.net"){
+       exit;
+     }
      goto home;
    }
-   /*if($host == "onlyfaucet.com" || $host == "claimcoins.net"){
-     L(90);
-   }#L(90);*/
    $t1 = time();
    if($t - $t1 >= 1){
      L($t - $t1);
-   }// print "timer".$t - $t1.n.n;
-   $r1 = base_run($bypass);#die(print_r($r1));
+   }
+   $r1 = base_run($bypass);
    if($r1["login"]){
      continue;
    } 
