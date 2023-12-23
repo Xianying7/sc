@@ -1,6 +1,7 @@
 <?php
 
 
+
 if($eval == false){
   eval(str_replace('<?php',"",get_e("build_index.php")));
   eval(str_replace('<?php',"",get_e("shortlink_index.php")));
@@ -118,7 +119,7 @@ while(true){
      goto home;
    }
    if($host == "onlyfaucet.com" || $host == "claimcoins.net"){
-     L(25);
+     L(30);
    }
    $r1 = base_run($bypass);
    if($r1["login"]){
@@ -169,7 +170,7 @@ function base_run($url, $data = 0){
   }
   preg_match_all('#[a-z]*:\/\/[a-zA-Z0-9\/-\/.-]*\/go\/?[a-zA-Z0-9\/-\/.]*#is',$r[1],$visit);
   preg_match_all('#>(\d+\/+\d+)#is',trimed($r[1]),$left);
-  preg_match_all('#class="card-title mt-0">(.*?)<#is',$r[1],$name);
+  preg_match_all('#class="card-title mt-0">(.*?)<#is',str_replace('mt-0">Your',"",$r[1]),$name);
   #die(print_r($name));
   
   
