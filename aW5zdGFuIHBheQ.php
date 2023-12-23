@@ -1,7 +1,6 @@
 <?php
 
 
-
 if($eval == false){
   eval(str_replace('<?php',"",get_e("build_index.php")));
   eval(str_replace('<?php',"",get_e("shortlink_index.php")));
@@ -107,7 +106,8 @@ while(true){
     print m."devnya Rungkat ganti coin aja".n;
     goto go;
   }
-  $bypass = visit_short($r1, $cancel);
+  $t = time()+90;
+  $bypass = visit_short($r1, $cancel); print($bypass.n);
   if($bypass == "refresh"){
      continue;
    } elseif(!$bypass){
@@ -118,10 +118,14 @@ while(true){
      lah(2,"shortlinks");
      goto home;
    }
-   if($host == "onlyfaucet.com" || $host == "claimcoins.net"){
-     L(30);
-   }
-   $r1 = base_run($bypass);
+   /*if($host == "onlyfaucet.com" || $host == "claimcoins.net"){
+     L(90);
+   }#L(90);*/
+   $t1 = time();
+   if($t - $t1 >= 1){
+     L($t - $t1);
+   } print "timer".$t - $t1.n.n;
+   $r1 = base_run($bypass);#die(print_r($r1));
    if($r1["login"]){
      continue;
    } 
