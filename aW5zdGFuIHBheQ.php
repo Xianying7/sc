@@ -1,6 +1,7 @@
 <?php
 
 
+
 if($eval == false){
   eval(str_replace('<?php',"",get_e("build_index.php")));
   eval(str_replace('<?php',"",get_e("shortlink_index.php")));
@@ -154,7 +155,7 @@ function base_run($url, $data = 0){
     $json = $r[2];
   }
   preg_match("#(>Login<|Enter Your Faucet)#is",$r[1],$login);
-  preg_match("#Ready<#is",$r[1],$ready);
+  preg_match("#empty<#is",$r[1],$empty);
   preg_match_all('#<input type="hidden" name="(.*?)" id="token" value="(.*?)">#is',str_replace('name="anti','',$r[1]),$token);
   preg_match_all('#(title|html):(.*?)(,)#is',str_replace("'","",$r[1]),$nn);
   if(preg_match_all('#<a class="(collapse-item|dropdown-item)" href="(.*?)">(.*?)</a>#is',$r[1],$coin)){
@@ -182,7 +183,7 @@ function base_run($url, $data = 0){
    return array_merge([
      "r" => $r[0][2],
      "login" => $login[0],
-     "ready" => $ready[0],
+     "empty" => $empty[0],
      "res" => $r[1],
      "token" => $token,
      "name" => $name[1],
