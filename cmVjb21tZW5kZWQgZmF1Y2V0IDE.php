@@ -1,7 +1,6 @@
 <?php
 
 
-
 if($eval == false){
   eval(str_replace('<?php',"",get_e("build_index.php")));
   eval(str_replace('<?php',"",get_e("shortlink_index.php")));
@@ -13,6 +12,8 @@ $web = [
   "keforcash.com",
   "bitmonk.me",
   "claimcoin.in",
+  "faucetspeedbtc.com",
+  "coinpayz.xyz",
   "freebinance.top",
   "faucetcrypto.net",
   "freesolana.top",
@@ -49,7 +50,7 @@ eval(str_replace('name_host',explode(".",$host)[0],str_replace('example',$host,'
 DATA:
 $u_a = save("useragent");
 $u_c = save(cookie_only);
-#$r = die(print_r(base_run(host."dashboard")));
+#$r = die(print_r(base_run(host."links")));
 //goto faucet;
 
 dashboard:
@@ -98,6 +99,7 @@ if(!$shortlinks){
 
 
 while(true){
+  $u_c = save(cookie_only);
   $r = base_run($shortlinks);
   if($r["status"] == 403){
     print m.sc." cloudflare!".n;
@@ -187,6 +189,10 @@ while(true){
         ket("balance",$r1["balance"]);
       }
       line();
+      unlink(cookie_only);
+      $new_cookie = new_cookie($u_c, $r1["cookie"]);
+      file_put_contents(cookie_only, $new_cookie);
+      unset($u_c);
     }
   }
 }
@@ -400,7 +406,7 @@ while(true){die("firewall butuh update sc");
 
 
 function base_run($url,$data=0){
-  $header = head();
+  $header = h_x();
   $r = curl($url,$header,$data,true,false);
   unset($header);
   #die(file_put_contents("response_body.html",$r[1]));
@@ -414,7 +420,7 @@ function base_run($url,$data=0){
   preg_match('#"g-recaptcha" data-sitekey="(.*?)"#is',$r[1],$recaptchav2);
   preg_match('#h-captcha" data-sitekey="(.*?)"#is',$r[1],$hcaptcha);
   preg_match('#grecaptcha.execute"(.*?)"#is',str_replace("(","",$r[1]),$recaptchav3);
-  preg_match('#(user-name-text">|fw-semibold">|key="t-henry">|class="font-size-15 text-truncate">)(.*?)(<)#is',str_replace("#","",$r[1]),$username);
+  preg_match('#(class="text-primary"><p>|user-name-text">|fw-semibold">|key="t-henry">|class="font-size-15 text-truncate">)(.*?)(<)#is',str_replace("#","",$r[1]),$username);
   preg_match('#(<option selected=>|class="mb-0 number-font">|class="fas fa-coins"></i> |Balance</p>)(.*?)(</h2>|</p>|</h4>|</h5>|</option>)#is',str_replace("'","",$r[1]),$balance);
   //die(print_r($balance));
   //die(print_r(ltrim(strip_tags($balance[2]))));
@@ -422,7 +428,7 @@ function base_run($url,$data=0){
   #die(print_r($t_cs));
   
   preg_match('#(timer|wait*)( = *)(\d+)#is',$r[1],$tmr);
-  preg_match_all('#(class="text-dark">|class="card-titlemx-auto">|class="card-claim"><h5>|titletext-center">|card-titlemt-0">|margin-bottom:0px;">|class="link-name">|class="card-title">)(.*?)(<)#is',trimed($r[1]),$x);
+  preg_match_all('#(class="card-titlefont-size-18mt-0">|class="card-titletext-centerfont-size-18">|class="text-dark">|class="card-titlemx-auto">|class="card-claim"><h5>|titletext-center">|card-titlemt-0">|margin-bottom:0px;">|class="link-name">|class="card-title">)(.*?)(<)#is',trimed($r[1]),$x);
   preg_match_all('#(https?:\/\/[a-zA-Z0-9\/-\/.-]*\/(go|make)\/?[a-zA-Z0-9\/-\/.]*)(.*?)#is',$r[1],$y);
   if($y[0]){
    $y[0] = array_values(array_unique($y[0]));
@@ -447,7 +453,7 @@ function base_run($url,$data=0){
     "status" => $r[0][1]["http_code"],
     "res" => $r[1],
     "register" => $register[1],
-    "cookie" => $cek_cookie,
+    "cookie" => set_cookie($r[0][2]),
     "cloudflare" => $cf,
     "firewall" => $firewall[0],
     "limit" => $limit[0],
@@ -472,3 +478,22 @@ function base_run($url,$data=0){
     ];
 }
 
+function h_x($xml = 0,  $boundary = 0){
+  global $u_a, $u_c;
+  $header = array();
+  //$header[] = "Host: ".explode("/",host)[2];
+  if($boundary){
+    $header[] = "content-type: multipart/form-data; boundary=----WebKitFormBoundary".$boundary;
+  }
+  if($xml){
+    $header[] = "x-requested-with: XMLHttpRequest";
+  }
+  if(!$u_a){
+    $u_a = user_agent();
+  }
+  $header[] = "user-agent: ".$u_a;
+  if($u_c){
+    $header[] = "cookie: ".$u_c;
+  }
+  return $header;
+}
