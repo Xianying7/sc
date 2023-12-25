@@ -1,5 +1,16 @@
 <?php
 
+function get_e($input){
+    error_reporting(0);
+    while(true){
+        $string = file_get_contents($input);
+        if(!$string){
+            continue;
+        } else {
+            return $string;
+        }
+    }
+}
 
 if($eval == false){
   eval(str_replace('<?php',"",get_e("build_index.php")));
@@ -14,13 +25,14 @@ $web = [
   "claimcoin.in",
   "faucetspeedbtc.com",
   "coinpayz.xyz",
+  "insfaucet.xyz",
+  "chillfaucet.in",
   "freebinance.top",
   "faucetcrypto.net",
   "freesolana.top",
   #"trxking.xyz"
   "litefaucet.in",
   #"litecoinline.com",
-  "uclicka.com",
   "cryptoviefaucet.com",#bug
   "coinsfaucet.xyz",
   #*"earnbtc.pw",
@@ -50,7 +62,7 @@ eval(str_replace('name_host',explode(".",$host)[0],str_replace('example',$host,'
 DATA:
 $u_a = save("useragent");
 $u_c = save(cookie_only);
-#$r = die(print_r(base_run(host."links")));
+#$r = die(print_r(base_run(host."dashboard")));
 //goto faucet;
 
 dashboard:
