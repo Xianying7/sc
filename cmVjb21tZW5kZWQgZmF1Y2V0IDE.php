@@ -2,6 +2,7 @@
 
 
 
+
 if($eval == false){
   eval(str_replace('<?php',"",get_e("build_index.php")));
   eval(str_replace('<?php',"",get_e("shortlink_index.php")));
@@ -18,6 +19,10 @@ $web = [
   "insfaucet.xyz",
   "chillfaucet.in",
   "queenofferwall.com",
+  "liteearn.com",
+  "hatecoin.me",
+  "nobitafc.com",
+  "bitupdate.info",
   "freebinance.top",
   "faucetcrypto.net",
   "freesolana.top",
@@ -53,8 +58,9 @@ eval(str_replace('name_host',explode(".",$host)[0],str_replace('example',$host,'
 DATA:
 $u_a = save("useragent");
 $u_c = save(cookie_only);
-#$r = die(print_r(base_run(host."dashboard")));
-//goto faucet;
+#$r1 = base_run(host."dashboard");die(print_r($r1));
+
+
 
 dashboard:
 $redirect = "dashboard";
@@ -122,7 +128,7 @@ while(true){
     goto shortlinks;
   } elseif(!$bypas){
     lah(1,$redirect);
-    die("nunggu update fitur lagi");
+    //die("nunggu update fitur lagi");
     L(5);
     goto auto;
   }
@@ -151,12 +157,11 @@ for($i = 0;$i<=count($link);$i++){
 }
 
 if(!$auto){
-  lah(2,$redirect);
-  L(5);
-  goto ptc;
+  die(lah(2,$redirect));
 }
 
 while(true){
+  $u_c = save(cookie_only);
   $r = base_run($auto);
   if($r["status"] == 403){
     print m.sc." cloudflare!".n;
@@ -172,9 +177,7 @@ while(true){
     goto firewall;
   }
   if($r["limit"]){
-    lah();
-    L(5);
-    goto ptc;
+    die(lah());
   }
   if($r["timer"]){
     tmr(2,$r["timer"]);
@@ -186,7 +189,7 @@ while(true){
       r();
       goto firewall;
     }
-    if(preg_match("#good#is",$r1["notif"]) == true){
+    if(preg_match("#(good|suc)#is",$r1["notif"]) == true){
       an(h.$r1["notif"].n);
       if($r1["balance"]){
         ket("balance",$r1["balance"]);
@@ -199,178 +202,6 @@ while(true){
     }
   }
 }
-
-
-ptc:
-$redirect = "ptc";
-for($i = 0;$i<=count($link);$i++){
-  if(preg_match("#(ptc)#is",$link[$i])){
-    $ptc = $link[$i];
-    break;
-  }
-}
-if(!$ptc){
-  lah(2,$redirect);
-  L(5);
-  goto faucet;
-}
-
-while(true){
-  $r = base_run($ptc);
-  if($r["status"] == 403){
-    print m.sc." cloudflare!".n;
-    unlink(cookie_only);
-    goto DATA;
-  } elseif($r["register"]){
-    print m.sc." cookie expired!".n;
-    unlink(cookie_only);
-    goto DATA;
-  } elseif($r["firewall"]){
-    print m."Firewall!";
-    r();
-    goto firewall;
-  } elseif(!$r["redirect"][0] or $r["left_ptc"]==0){
-    lah(1,$redirect);
-    L(5);
-    goto faucet;
-  }
-  $r1 = base_run($r["redirect"][0]);
-  $t = $r1["token_csrf"];
-  tmr(2,$r1["timer"]);
-  rep:
-  if($r1["recaptchav3"]){
-    $method = "recaptchav3";
-    $cap = recaptchav3($r1[$method],$ptc);
-    $rsp["captcha"] = $method;
-    $rsp["recaptchav3"] = $cap;
-    goto startp;
-  } elseif($r1["hcaptcha"]){
-    $method = "hcaptcha";
-    $cap = multibot($method,$r1[$method],$ptc);
-    $rsp["captcha"] = $method;
-    $rsp["h-captcha-response"] = $cap;
-    goto startp;
-  } elseif($r1["recaptchav2"]){
-    $method = "recaptchav2";
-    $cap = multibot($method,$r1[$method],$ptc);
-    $rsp["captcha"] = $method;
-    $rsp["g-recaptcha-response"] = $cap;
-    goto startp;
-  }
-  if(!$cap){
-    goto rep;
-  }
-  startp:
-  $data = data_post($t, "one", array_merge($rsp));
-  unset($rsp);#die($data);
-  $r2 = base_run($r1["redirect"][0],$data);
-  if($r2["firewall"]){
-    print m."Firewall!";
-    r();
-    goto firewall;
-  }
-  if(preg_match("#good#is",$r2["notif"]) == true){
-    an(h.$r2["notif"].n);
-    line();
-  } else {
-    print m."invalid captcha!";
-    r();
-  }
-}
-exit;
-
-faucet:
-$redirect = "faucet";
-for($i = 0;$i<=count($link);$i++){
-  if(preg_match("#(faucet)#is",$link[$i])){
-    $faucet = $link[$i];
-    break;
-  }
-}
-
-if(!$faucet){
-lah(2,$redirect);
-exit;
-}
-
-while(true){
-  $r = base_run($faucet);
-  if($r["status"] == 403){
-    print m.sc." cloudflare!".n;
-    unlink(cookie_only);
-    goto DATA;
-  } elseif($r["register"]){
-    print m.sc." cookie expired!".n;
-    unlink(cookie_only);
-    goto DATA;
-  } elseif($r["firewall"]){
-    print m."Firewall!";
-    r();
-    goto firewall;
-  } elseif($r["limit"] or explode("/",$r["left"][0])[0] == 0){
-    lah(1,$redirect);
-    exit;
-  }
-  $t = $r["token_csrf"];
-  if($r["timer"]){
-    if($r["timer"] == 6){
-    } else {
-      tmr(1,$r["timer"]);
-      continue;
-    }
-  }
-  if(!$r["redirect"][0]){
-    continue;
-  }
-  if($r["antb"]){
-    $antibot = antibot($r["res"]);
-    if(!$antibot){
-      continue;
-    }
-    $rsp["antibotlinks"] = $antibot;
-  }
-  re:
-  if($r1["recaptchav3"]){
-    $method = "recaptchav3";
-    $cap = recaptchav3($r1[$method],$faucet);
-    $rsp["captcha"] = $method;
-    $rsp["recaptchav3"] = $cap;
-    goto start;
-  } elseif($r["hcaptcha"]){
-    $method = "hcaptcha";
-    $cap = multibot($method,$r[$method],$faucet);
-    $rsp["captcha"] = $method;
-    $rsp["h-captcha-response"] = $cap;
-    goto start;
-  }  elseif($r["recaptchav2"]){
-    $method = "recaptchav2";
-    $cap = multibot($method,$r[$method],$faucet);
-    $rsp["captcha"] = $method;
-    $rsp["g-recaptcha-response"] = $cap;
-    goto start;
-  }
-  if(!$cap){
-    goto re;
-  }
-  start:
-  $data = data_post($t, "one", array_merge($rsp));
-  unset($rsp);
-  $r1 = base_run($r["redirect"][0],$data);
-  if($r1["firewall"]){
-    print m."Firewall!";
-    r();
-    goto firewall;
-  }
-  if(preg_match("#good#is",$r1["notif"]) == true){
-    an(h.$r1["notif"].n);
-    line();
-    tmr(1,$r1["timer"]);
-  } else {
-    print m."invalid captcha!";
-    r();
-  }
-}
-
 
 
 firewall:
@@ -393,11 +224,11 @@ while(true){die("firewall butuh update sc");
             line();
             if($redirect == "dashboard"){
                 goto dashboard;
-            } elseif($redirect == "ptc"){
+            } /*elseif($redirect == "ptc"){
                 goto ptc;
             } elseif($redirect == "faucet"){
                 goto faucet;
-            } elseif($redirect == "auto"){
+            } */elseif($redirect == "auto"){
                 goto auto;
             }
         } else {
@@ -424,7 +255,7 @@ function base_run($url,$data=0){
   preg_match('#h-captcha" data-sitekey="(.*?)"#is',$r[1],$hcaptcha);
   preg_match('#grecaptcha.execute"(.*?)"#is',str_replace("(","",$r[1]),$recaptchav3);
   preg_match('#(class="text-primary"><p>|user-name-text">|fw-semibold">|key="t-henry">|class="font-size-15 text-truncate">)(.*?)(<)#is',str_replace("#","",$r[1]),$username);
-  preg_match('#(<option selected=>|class="mb-0 number-font">|class="fas fa-coins"></i> |Balance</p>)(.*?)(</h2>|</p>|</h4>|</h5>|</option>)#is',str_replace("'","",$r[1]),$balance);
+  preg_match('#(<p class="text-muted mb-0">|<option selected=>|class="mb-0 number-font">|class="fas fa-coins"></i> |Balance</p>)(.*?)(</h2>|</p>|</h4>|</h5>|</option>|</p>)#is',str_replace("'","",$r[1]),$balance);
   //die(print_r($balance));
   //die(print_r(ltrim(strip_tags($balance[2]))));
   preg_match_all('#hidden" name="(.*?)" value="(.*?)"#',str_replace('name="anti','',$r[1]),$t_cs);
@@ -432,13 +263,13 @@ function base_run($url,$data=0){
   
   preg_match('#(timer|wait*)( = *)(\d+)#is',$r[1],$tmr);
   preg_match_all('#(class="card-titlefont-size-18mt-0">|class="card-titletext-centerfont-size-18">|class="text-dark">|class="card-titlemx-auto">|class="card-claim"><h5>|titletext-center">|card-titlemt-0">|margin-bottom:0px;">|class="link-name">|class="card-title">)(.*?)(<)#is',trimed($r[1]),$x);
-  preg_match_all('#(https?:\/\/[a-zA-Z0-9\/-\/.-]*\/(go|make)\/?[a-zA-Z0-9\/-\/.]*)(.*?)#is',$r[1],$y);
+  preg_match_all('#(https?:\/\/[a-zA-Z0-9\/-\/.-]*\/(go|make|pre_verify)\/?[a-zA-Z0-9\/-\/.]*)(.*?)#is',$r[1],$y);
   if($y[0]){
    $y[0] = array_values(array_unique($y[0]));
-  }
+  }https://hatecoin.me/links/pre_verify/212
   preg_match_all('#(>| )(\d+\/+\d+)#is', str_replace(str_split('({['),'',$r[1]),$z);
   preg_match("/\b(?:(?:https?|ftp):\/\/|www\.)[-a-z0-9+&@#\/%?=~_|!:,.;]*[-a-z0-9+&@#\/%=~_|]/i",$r[1],$u_r);
-  preg_match_all("#(https?:\/\/".sc."[a-z\/.]*)(\/auto|\/faucet|\/ptc|\/links|\/shortlinks)#is",$r[1],$link);
+  preg_match_all("#(https?:\/\/".sc."[a-z\/.]*)(\/auto|\/faucet|\/ptc|\/links|\/shortlinks|\/achievements)#is",$r[1],$link);
   //die(print_r(array_merge(array_unique($link[0]))));
  # swal('Good job!', '0.002 USDT has been added to your balance', 'success')
   preg_match("#(alert-borderless'>|Swal.fire|swal[(])(.*?)(<)#is",$r[1],$n);
@@ -448,10 +279,8 @@ function base_run($url,$data=0){
     $n[2] = $nn[2][0].$nn[2][1];
   }
   preg_match_all("#(https?:\/\/[a-z\/.]*)(verify|ptc\/view|achievements\/claim*)(\/?[a-z0-9\/]*)(.*?)#is",$r[1],$redirect);
-  preg_match('#("badge badge-primary">|badge badge-info">)(\d+)#is',$r[1],$p);
-  preg_match_all('#rel=\\\"(.*?)\\\">#is',$r[1],$ab);
-  //print_r($sl);
-  //die(print_r($xx));
+  
+  #die(print($data));
   return [
     "status" => $r[0][1]["http_code"],
     "res" => $r[1],
@@ -469,28 +298,18 @@ function base_run($url,$data=0){
     "token_csrf" => $t_cs,
     "visit" => $y[0],
     "left" => $z[2],
-    "left_ptc" => $p[2],
     "name" => $x[2],
     "notif" => preg_replace("/[^a-zA-Z0-9-!. ]/","",$n[2]),
     "url" => $u_r[0],
     "link" => array_merge(array_unique($link[0])),
     "url1" => $r[0][0]["location"],
     "redirect"=>$redirect[0],
-    "json" => json_decode($r[1]),
-    "antb" => $ab[1][0]
     ];
 }
 
-function h_x($xml = 0,  $boundary = 0){
+function h_x(){
   global $u_a, $u_c;
   $header = array();
-  //$header[] = "Host: ".explode("/",host)[2];
-  if($boundary){
-    $header[] = "content-type: multipart/form-data; boundary=----WebKitFormBoundary".$boundary;
-  }
-  if($xml){
-    $header[] = "x-requested-with: XMLHttpRequest";
-  }
   if(!$u_a){
     $u_a = user_agent();
   }
