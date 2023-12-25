@@ -27,6 +27,7 @@ $web = [
   "coinpayz.xyz",
   "insfaucet.xyz",
   "chillfaucet.in",
+  "queenofferwall.com",
   "freebinance.top",
   "faucetcrypto.net",
   "freesolana.top",
