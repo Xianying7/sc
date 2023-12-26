@@ -1,7 +1,6 @@
 <?php
 
 
-
 if($eval == false){
   eval(str_replace('<?php',"",get_e("build_index.php")));
   eval(str_replace('<?php',"",get_e("shortlink_index.php")));
@@ -17,6 +16,7 @@ $web = [
   "earncryptowrs.in",
   "onlyfaucet.com",
   "claimcoins.net",
+  "doge25.in",
   ];
   
 for($i=0;$i<count($web);$i++){
