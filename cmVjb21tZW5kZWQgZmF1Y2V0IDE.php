@@ -1,5 +1,7 @@
 <?php
 
+
+
 if($eval == false){
   eval(str_replace('<?php',"",get_e("build_index.php")));
   eval(str_replace('<?php',"",get_e("shortlink_index.php")));
@@ -58,7 +60,7 @@ eval(str_replace('name_host',explode(".",$host)[0],str_replace('example',$host,'
 DATA:
 $u_a = save("useragent");
 $u_c = save(cookie_only);
-#$r1 = base_run(host."links");die(print_r($r1));
+#$r1 = base_run("https://api.zenrows.com/v1/?apikey=c40dec3f62598decd51a640804307451e4101c27&antibot=true&custom_headers=true&url=https://banfaucet.com/links");die(print_r($r1));
 
 
 
@@ -112,7 +114,7 @@ while(true){
   $r = base_run($shortlinks);
   if($r["status"] == 403){
     print m.sc." cloudflare!".n;
-    unlink(cookie_only);
+   exit; unlink(cookie_only);
     goto DATA;
   } elseif($r["register"]){
     print m.sc." cookie expired!".n;
@@ -138,7 +140,7 @@ while(true){
     r();
     goto firewall;
   }
-  if(preg_match("#(good|suc)#is",$r1["notif"]) == true){
+  if(preg_match("#(good|suc|been)#is",$r1["notif"]) == true){
     an(h.$r1["notif"].n);
     if($r1["balance"]){
       ket("balance",$r1["balance"]);
@@ -189,7 +191,7 @@ while(true){
       r();
       goto firewall;
     }
-    if(preg_match("#(good|suc)#is",$r1["notif"]) == true){
+    if(preg_match("#(good|suc|been)#is",$r1["notif"]) == true){
       an(h.$r1["notif"].n);
       if($r1["balance"]){
         ket("balance",$r1["balance"]);
@@ -273,7 +275,7 @@ function base_run($url,$data=0){
  # swal('Good job!', '0.002 USDT has been added to your balance', 'success')
   preg_match("#(alert-borderless'>|Swal.fire|swal[(])(.*?)(<)#is",$r[1],$n);
   #preg_match('#(Swal.fire)(.*?)(<)#is',$r[1],$n);
-  preg_match_all('#(title|text):(.*?)(,)#is',$r[1],$nn);
+  preg_match_all('#(title|text|icon):(.*?)(,|\n})#is',$r[1],$nn);
   if(!$n[2]){
     $n[2] = $nn[2][0].$nn[2][1];
   }
