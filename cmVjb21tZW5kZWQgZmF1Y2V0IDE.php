@@ -1,8 +1,6 @@
 <?php
 
 
-
-
 if($eval == false){
   eval(str_replace('<?php',"",get_e("build_index.php")));
   eval(str_replace('<?php',"",get_e("shortlink_index.php")));
@@ -246,11 +244,10 @@ function base_run($url,$data=0){
   #die(file_put_contents("response_body.html",$r[1]));
   #$r[1] = get_e("response_body.html");
   preg_match("#Just a moment#is",$r[1],$cloudflare);
-  preg_match("#(login)#is",$r[1],$register);
-  
-  
+  preg_match("#(login)#is",$r[1],$register);    
   preg_match("#(Protecting faucet|Daily limit reached|for Auto Faucet)#is",$r[1],$limit);
   preg_match("#firewall#is",$r[1],$firewall);
+  preg_match("#(Failed to generate this link)#is",$r[1],$failed);
   preg_match('#"g-recaptcha" data-sitekey="(.*?)"#is',$r[1],$recaptchav2);
   preg_match('#h-captcha" data-sitekey="(.*?)"#is',$r[1],$hcaptcha);
   preg_match('#grecaptcha.execute"(.*?)"#is',str_replace("(","",$r[1]),$recaptchav3);
@@ -266,7 +263,7 @@ function base_run($url,$data=0){
   preg_match_all('#(https?:\/\/[a-zA-Z0-9\/-\/.-]*\/(go|make|pre_verify)\/?[a-zA-Z0-9\/-\/.]*)(.*?)#is',$r[1],$y);
   if($y[0]){
    $y[0] = array_values(array_unique($y[0]));
-  }https://hatecoin.me/links/pre_verify/212
+  }
   preg_match_all('#(>| )(\d+\/+\d+)#is', str_replace(str_split('({['),'',$r[1]),$z);
   preg_match("/\b(?:(?:https?|ftp):\/\/|www\.)[-a-z0-9+&@#\/%?=~_|!:,.;]*[-a-z0-9+&@#\/%=~_|]/i",$r[1],$u_r);
   preg_match_all("#(https?:\/\/".sc."[a-z\/.]*)(\/auto|\/faucet|\/ptc|\/links|\/shortlinks|\/achievements)#is",$r[1],$link);
@@ -303,6 +300,7 @@ function base_run($url,$data=0){
     "url" => $u_r[0],
     "link" => array_merge(array_unique($link[0])),
     "url1" => $r[0][0]["location"],
+    "failed"=>$failed[1],
     "redirect"=>$redirect[0],
     ];
 }
