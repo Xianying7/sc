@@ -1,6 +1,5 @@
 <?php
 
-
 if($eval == false){
   eval(str_replace('<?php',"",get_e("build_index.php")));
   eval(str_replace('<?php',"",get_e("shortlink_index.php")));
@@ -21,6 +20,9 @@ $web = [
   "hatecoin.me",
   "nobitafc.com",
   "bitupdate.info",
+  "newzcrypt.xyz",
+  "hfaucet.com",
+  "banfaucet.com",
   "freebinance.top",
   "faucetcrypto.net",
   "freesolana.top",
@@ -56,7 +58,7 @@ eval(str_replace('name_host',explode(".",$host)[0],str_replace('example',$host,'
 DATA:
 $u_a = save("useragent");
 $u_c = save(cookie_only);
-#$r1 = base_run(host."dashboard");die(print_r($r1));
+#$r1 = base_run(host."links");die(print_r($r1));
 
 
 
@@ -244,27 +246,27 @@ function base_run($url,$data=0){
   #die(file_put_contents("response_body.html",$r[1]));
   #$r[1] = get_e("response_body.html");
   preg_match("#Just a moment#is",$r[1],$cloudflare);
-  preg_match("#(login)#is",$r[1],$register);    
+  preg_match("#(login)#is",str_replace("Login every","",$r[1]),$register);    
   preg_match("#(Protecting faucet|Daily limit reached|for Auto Faucet)#is",$r[1],$limit);
   preg_match("#firewall#is",$r[1],$firewall);
   preg_match("#(Failed to generate this link)#is",$r[1],$failed);
   preg_match('#"g-recaptcha" data-sitekey="(.*?)"#is',$r[1],$recaptchav2);
   preg_match('#h-captcha" data-sitekey="(.*?)"#is',$r[1],$hcaptcha);
   preg_match('#grecaptcha.execute"(.*?)"#is',str_replace("(","",$r[1]),$recaptchav3);
-  preg_match('#(class="text-primary"><p>|user-name-text">|fw-semibold">|key="t-henry">|class="font-size-15 text-truncate">)(.*?)(<)#is',str_replace("#","",$r[1]),$username);
-  preg_match('#(<p class="text-muted mb-0">|<option selected=>|class="mb-0 number-font">|class="fas fa-coins"></i> |Balance</p>)(.*?)(</h2>|</p>|</h4>|</h5>|</option>|</p>)#is',str_replace("'","",$r[1]),$balance);
+  preg_match('#(class="fa-solid fa-user-graduate me-2"></i>|class="text-primary"><p>|user-name-text">|fw-semibold">|key="t-henry">|class="font-size-15 text-truncate">)(.*?)(<)#is',str_replace("#","",$r[1]),$username);
+  preg_match('#(class="fas fa-dollar-sign"></i>|<p class="text-muted mb-0">|<option selected=>|class="mb-0 number-font">|class="fas fa-coins"></i> |Balance</p>)(.*?)(</h2>|</p>|</h4>|</h5>|</option>|</p>|<i)#is',str_replace("'","",$r[1]),$balance);
   //die(print_r($balance));
   //die(print_r(ltrim(strip_tags($balance[2]))));
   preg_match_all('#hidden" name="(.*?)" value="(.*?)"#',str_replace('name="anti','',$r[1]),$t_cs);
   #die(print_r($t_cs));
   
   preg_match('#(timer|wait*)( = *)(\d+)#is',$r[1],$tmr);
-  preg_match_all('#(class="card-titlefont-size-18mt-0">|class="card-titletext-centerfont-size-18">|class="text-dark">|class="card-titlemx-auto">|class="card-claim"><h5>|titletext-center">|card-titlemt-0">|margin-bottom:0px;">|class="link-name">|class="card-title">)(.*?)(<)#is',trimed($r[1]),$x);
+  preg_match_all('#(<h5class="title">|class="card-titlefont-size-18mt-0">|class="card-titletext-centerfont-size-18">|class="text-dark">|class="card-titlemx-auto">|class="card-claim"><h5>|titletext-center">|card-titlemt-0">|margin-bottom:0px;">|class="link-name">|class="card-title">)(.*?)(<)#is',trimed($r[1]),$x);
   preg_match_all('#(https?:\/\/[a-zA-Z0-9\/-\/.-]*\/(go|make|pre_verify)\/?[a-zA-Z0-9\/-\/.]*)(.*?)#is',$r[1],$y);
   if($y[0]){
    $y[0] = array_values(array_unique($y[0]));
   }
-  preg_match_all('#(>| )(\d+\/+\d+)#is', str_replace(str_split('({['),'',$r[1]),$z);
+  preg_match_all('#(>| |\n)(\d+\/+\d+)#is', str_replace(str_split('({['),'',$r[1]),$z);
   preg_match("/\b(?:(?:https?|ftp):\/\/|www\.)[-a-z0-9+&@#\/%?=~_|!:,.;]*[-a-z0-9+&@#\/%=~_|]/i",$r[1],$u_r);
   preg_match_all("#(https?:\/\/".sc."[a-z\/.]*)(\/auto|\/faucet|\/ptc|\/links|\/shortlinks|\/achievements)#is",$r[1],$link);
   //die(print_r(array_merge(array_unique($link[0]))));
