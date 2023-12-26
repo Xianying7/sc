@@ -2,6 +2,7 @@
 
 
 
+
 if($eval == false){
   eval(str_replace('<?php',"",get_e("build_index.php")));
   eval(str_replace('<?php',"",get_e("shortlink_index.php")));
@@ -114,7 +115,7 @@ while(true){
   $r = base_run($shortlinks);
   if($r["status"] == 403){
     print m.sc." cloudflare!".n;
-   exit; unlink(cookie_only);
+    unlink(cookie_only);
     goto DATA;
   } elseif($r["register"]){
     print m.sc." cookie expired!".n;
@@ -141,11 +142,11 @@ while(true){
     goto firewall;
   }
   if(preg_match("#(good|suc|been)#is",$r1["notif"]) == true){
-    an(h.$r1["notif"].n);
+    text_line(h.$r1["notif"]);
     if($r1["balance"]){
       ket("balance",$r1["balance"]);
-    }
-    line();
+      line();
+    }   
   }
 }
 
@@ -192,11 +193,11 @@ while(true){
       goto firewall;
     }
     if(preg_match("#(good|suc|been)#is",$r1["notif"]) == true){
-      an(h.$r1["notif"].n);
+      text_line(h.$r1["notif"]);
       if($r1["balance"]){
         ket("balance",$r1["balance"]);
+        line();
       }
-      line();
       unlink(cookie_only);
       $new_cookie = new_cookie($u_c, $r1["cookie"]);
       file_put_contents(cookie_only, $new_cookie);
