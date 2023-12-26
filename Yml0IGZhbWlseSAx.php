@@ -303,6 +303,7 @@ function base_run($url, $data = 0, $xml = 0){
     $json = $r[2];
   }
   preg_match("#(Keep me logged in for 1 week)#is",$r[1],$logout);
+  preg_match("#(Unexpected error occurred)#is",$r[1],$failed);
   preg_match_all('#(font|<div) class="(text-success|text-primary|text-warning)">(.*?)<#is',str_replace(['" id="account_balance',"<b>"],"",$r[1]),$info);#die(print_r($info));
   preg_match("#childWindow=open(.*?)',#is",trimed($r[1]),$surf);
   preg_match('#(text-dark|website_block)" id="([0-9]*)"#is',$r[1],$id);
@@ -351,6 +352,7 @@ function base_run($url, $data = 0, $xml = 0){
     "delay" => $delay[1],
     "claim" => $claim[2],
     "locked" => $locked[0],
+    "failed" => $failed[0],
     "status" => $r[0][1]["http_code"]
     ], array_merge_recursive($array1, $array2)
     );
