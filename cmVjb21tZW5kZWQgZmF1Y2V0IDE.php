@@ -2,7 +2,6 @@
 
 
 
-
 if($eval == false){
   eval(str_replace('<?php',"",get_e("build_index.php")));
   eval(str_replace('<?php',"",get_e("shortlink_index.php")));
@@ -26,10 +25,11 @@ $web = [
   "newzcrypt.xyz",
   "hfaucet.com",
   "banfaucet.com",
+  "claimcash.cc",
   "freebinance.top",
   "faucetcrypto.net",
   "freesolana.top",
-  #"trxking.xyz"
+  "trxking.xyz",
   "litefaucet.in",
   #"litecoinline.com",
   "cryptoviefaucet.com",#bug
