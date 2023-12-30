@@ -109,7 +109,7 @@ while(true){
   }
   $t = time()+90;
   $bypass = visit_short($r1, $cancel);
-  if($bypass == "refresh"){
+  if($bypass == "refresh" || $bypass == "skip"){
      continue;
    } elseif(!$bypass){
      $r1 = base_run($link);
