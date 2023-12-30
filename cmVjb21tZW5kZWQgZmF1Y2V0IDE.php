@@ -1,6 +1,24 @@
 <?php
 
 
+ # ([a-zA-Z0-9-, .]*)<#is',str_replace("'","",$r[1]),$bal);
+
+/*/ Mendapatkan jumlah warna pada gambar
+function getNumberOfColors($imagePath) {
+    $image = imagecreatefromstring($imagePath);
+    $numberOfColors = imagecolorstotal($image);
+    imagefilter($image, IMG_FILTER_NEGATE);
+    imagedestroy($image);
+    return $numberOfColors;
+}
+
+// Contoh penggunaan
+$iconPath = file_get_contents("coba10.png");
+$numberOfColors = getNumberOfColors($iconPath);
+echo "Jumlah warna pada gambar: $numberOfColors";
+
+*/
+
 
 if($eval == false){
   eval(str_replace('<?php',"",get_e("build_index.php")));
@@ -31,13 +49,13 @@ $web = [
   "freesolana.top",
   "trxking.xyz",
   "litefaucet.in",
-  #"litecoinline.com",
-  "cryptoviefaucet.com",#bug
+  "litecoinline.com",
+  "cryptoviefaucet.com",
   "coinsfaucet.xyz",
-  #*"earnbtc.pw",
-  #"claimbitco.in",
+  "earnbtc.pw",
+  "claimbitco.in",
   #"coinsward.com",
-  #"eurofaucet.de",
+  "eurofaucet.de",
   "ourcoincash.xyz",
   #"www.freebnbcoin.com",
   "mezo.live"
@@ -90,6 +108,30 @@ if($r["username"]){
 }
 ket("balance",$r["balance"]).line();
 #goto faucet;
+/*
+$url_go = 
+["https://keforcash.com/links/go/1",
+"https://keforcash.com/links/go/9",
+"https://keforcash.com/links/go/12",
+"https://keforcash.com/links/go/11",
+"https://keforcash.com/links/go/10",
+"https://keforcash.com/links/go/2",
+"https://keforcash.com/links/go/14",
+"https://keforcash.com/links/go/18",
+"https://keforcash.com/links/go/7",
+"https://keforcash.com/links/go/5",
+"https://keforcash.com/links/go/4",
+"https://keforcash.com/links/go/3",
+"https://keforcash.com/links/go/6",
+"https://keforcash.com/links/go/13",
+"https://keforcash.com/links/go/15",
+"https://keforcash.com/links/go/17",
+"https://keforcash.com/links/go/16"];
+
+$dark[] = $url_go;
+
+*/
+
 
 
 
@@ -110,20 +152,36 @@ if(!$shortlinks){
 }
 
 
+$n = 0;
 while(true){
+  $n++;
   $u_c = save(cookie_only);
-  $r = base_run($shortlinks);
+  $r = base_run($shortlinks);#die(print_r($r));
+  if($n == 1) {
+    if(preg_match("#http#is",$r["visit"][0])) {
+      $dark[] = $r["visit"];
+      $dark_name[] = $r["name"];
+      #goto dark;
+    }
+  }
   if($r["status"] == 403){
+    /*if($dark) {
+      ket("info", m."selamat datang di pasar gelap").linke();
+      goto dark;
+    }*/
     print m.sc." cloudflare!".n;
     unlink(cookie_only);
+    unset($dark);
     goto DATA;
   } elseif($r["register"]){
     print m.sc." cookie expired!".n;
     unlink(cookie_only);
+    unset($dark);
     goto DATA;
   } elseif($r["firewall"]){
     print m."Firewall!";
     r();
+    unset($dark);
     goto firewall;
   }
   $bypas = visit_short($r);
@@ -148,6 +206,67 @@ while(true){
       line();
     }   
   }
+}
+
+dark:
+$config = config();
+for ($x = 0; $x < $config; $x++) {
+for ($i = 0; $i < $dark[0]; $i++) {
+if(!$dark[0]){
+ goto auto;
+}
+if(strtolower($config[$x]) == strtolower(trimed($dark_name[0][$i]))){
+   $true = 1;
+  }
+  if($true){
+    unset($dark[0][$i]);
+    unset($dark_name[0][$i]);
+    goto dark;
+  }
+if($dark[0][$i]) {
+$r = base_run($dark[0][$i]);
+if(!$r["url"]) {
+unset($dark[0][$i]);
+unset($dark_name[0][$i]);
+continue;
+}
+
+ket("url",$r["url"]).line();
+$bypas = bypass_shortlinks($r["url"]);
+#array_reverse($cookie)
+  if($bypas == "skip") {
+    unset($dark[0][$i]);
+    unset($dark_name[0][$i]);
+    continue;
+  } elseif($bypas == "refresh") {
+    print m."invalid bypass".n;
+    continue;
+  } elseif(!$bypas) {
+    goto auto;
+  }
+  base_run($bypas);
+  $r = base_run(host."dashboard");
+  if($r["status"] == 403){
+    print m.sc." cloudflare!".n;
+    unlink(cookie_only);
+    goto DATA;
+  } elseif($r["register"]){
+    print m.sc." cookie expired!".n;
+    unlink(cookie_only);
+    goto DATA;
+  } elseif($r["firewall"]){
+    print m."Firewall!";
+    r();
+    goto firewall;
+  }
+  if(preg_match("#(good|suc|been)#is",$r["notif"]) == true){
+    text_line(h.$r["notif"]);
+    ket("balance",$r["balance"]);
+    line();
+    goto dark;
+    }
+  }
+}
 }
 
 auto:
@@ -249,7 +368,8 @@ function base_run($url,$data=0){
   #die(file_put_contents("response_body.html",$r[1]));
   #$r[1] = get_e("response_body.html");
   preg_match("#Just a moment#is",$r[1],$cloudflare);
-  preg_match("#(login)#is",str_replace("Login every","",$r[1]),$register);    
+  preg_match("#(login)#is",str_replace("Login every","",$r[1]),$register);
+  preg_match("#(antibotlink)#is",$r[1],$antb);
   preg_match("#(Protecting faucet|Daily limit reached|for Auto Faucet)#is",$r[1],$limit);
   preg_match("#firewall#is",$r[1],$firewall);
   preg_match("#(Failed to generate this link)#is",$r[1],$failed);
@@ -257,8 +377,13 @@ function base_run($url,$data=0){
   preg_match('#h-captcha" data-sitekey="(.*?)"#is',$r[1],$hcaptcha);
   preg_match('#grecaptcha.execute"(.*?)"#is',str_replace("(","",$r[1]),$recaptchav3);
   preg_match('#(class="fa-solid fa-user-graduate me-2"></i>|class="text-primary"><p>|user-name-text">|fw-semibold">|key="t-henry">|class="font-size-15 text-truncate">)(.*?)(<)#is',str_replace("#","",$r[1]),$username);
-  preg_match('#(class="fas fa-dollar-sign"></i>|<p class="text-muted mb-0">|<option selected=>|class="mb-0 number-font">|class="fas fa-coins"></i> |Balance</p>)(.*?)(</h2>|</p>|</h4>|</h5>|</option>|</p>|<i)#is',str_replace("'","",$r[1]),$balance);
-  //die(print_r($balance));
+  preg_match_all('#(class="text-muted font-weight-medium">|class="">|class="text-muted mb-2">)(.*?)<(.*?)>([a-zA-Z0-9-, .]*)<#is',str_replace(["'",""],"",$r[1]),$bal);
+  #die(print_r($bal));
+  for ($i = 0; $i < 30; $i++) {
+  if(trimed(strtolower($bal[2][$i])) == "balance"){
+  $balance = $bal[4][$i];
+  break;
+  }}
   //die(print_r(ltrim(strip_tags($balance[2]))));
   preg_match_all('#hidden" name="(.*?)" value="(.*?)"#',str_replace('name="anti','',$r[1]),$t_cs);
   #die(print_r($t_cs));
@@ -287,6 +412,7 @@ function base_run($url,$data=0){
     "status" => $r[0][1]["http_code"],
     "res" => $r[1],
     "register" => $register[1],
+    "antb" => $antb[1],
     "cookie" => set_cookie($r[0][2]),
     "cloudflare" => $cf,
     "firewall" => $firewall[0],
@@ -295,7 +421,7 @@ function base_run($url,$data=0){
     "recaptchav3" => $recaptchav3[1],
     "hcaptcha" => $hcaptcha[1],
     "username" => preg_replace("/[^a-zA-Z0-9]/","",$username[2]),
-    "balance" => ltrim(strip_tags($balance[2])),
+    "balance" => ltrim(strip_tags($balance)),
     "timer" => $tmr[3],
     "token_csrf" => $t_cs,
     "visit" => $y[0],
