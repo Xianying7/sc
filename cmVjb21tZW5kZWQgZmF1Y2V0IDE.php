@@ -1,23 +1,6 @@
 <?php
 
 
- # ([a-zA-Z0-9-, .]*)<#is',str_replace("'","",$r[1]),$bal);
-
-/*/ Mendapatkan jumlah warna pada gambar
-function getNumberOfColors($imagePath) {
-    $image = imagecreatefromstring($imagePath);
-    $numberOfColors = imagecolorstotal($image);
-    imagefilter($image, IMG_FILTER_NEGATE);
-    imagedestroy($image);
-    return $numberOfColors;
-}
-
-// Contoh penggunaan
-$iconPath = file_get_contents("coba10.png");
-$numberOfColors = getNumberOfColors($iconPath);
-echo "Jumlah warna pada gambar: $numberOfColors";
-
-*/
 
 
 if($eval == false){
@@ -51,7 +34,7 @@ $web = [
   "litefaucet.in",
   "litecoinline.com",
   "cryptoviefaucet.com",
-  "coinsfaucet.xyz",
+ # "coinsfaucet.xyz",
   "earnbtc.pw",
   "claimbitco.in",
   #"coinsward.com",
@@ -79,7 +62,7 @@ eval(str_replace('name_host',explode(".",$host)[0],str_replace('example',$host,'
 DATA:
 $u_a = save("useragent");
 $u_c = save(cookie_only);
-#$r1 = base_run("https://api.zenrows.com/v1/?apikey=c40dec3f62598decd51a640804307451e4101c27&antibot=true&custom_headers=true&url=https://banfaucet.com/links");die(print_r($r1));
+#$r1 = base_run(host."links");#die(print_r($r1));
 
 
 
@@ -107,32 +90,6 @@ if($r["username"]){
   ket("username",$r["username"]);
 }
 ket("balance",$r["balance"]).line();
-#goto faucet;
-/*
-$url_go = 
-["https://keforcash.com/links/go/1",
-"https://keforcash.com/links/go/9",
-"https://keforcash.com/links/go/12",
-"https://keforcash.com/links/go/11",
-"https://keforcash.com/links/go/10",
-"https://keforcash.com/links/go/2",
-"https://keforcash.com/links/go/14",
-"https://keforcash.com/links/go/18",
-"https://keforcash.com/links/go/7",
-"https://keforcash.com/links/go/5",
-"https://keforcash.com/links/go/4",
-"https://keforcash.com/links/go/3",
-"https://keforcash.com/links/go/6",
-"https://keforcash.com/links/go/13",
-"https://keforcash.com/links/go/15",
-"https://keforcash.com/links/go/17",
-"https://keforcash.com/links/go/16"];
-
-$dark[] = $url_go;
-
-*/
-
-
 
 
 
@@ -185,7 +142,7 @@ while(true){
     goto firewall;
   }
   $bypas = visit_short($r);
-  if($bypas == "refresh"){
+  if($bypas == "refresh" || $bypas == "skip"){
     goto shortlinks;
   } elseif(!$bypas){
     lah(1,$redirect);
@@ -377,7 +334,7 @@ function base_run($url,$data=0){
   preg_match('#h-captcha" data-sitekey="(.*?)"#is',$r[1],$hcaptcha);
   preg_match('#grecaptcha.execute"(.*?)"#is',str_replace("(","",$r[1]),$recaptchav3);
   preg_match('#(class="fa-solid fa-user-graduate me-2"></i>|class="text-primary"><p>|user-name-text">|fw-semibold">|key="t-henry">|class="font-size-15 text-truncate">)(.*?)(<)#is',str_replace("#","",$r[1]),$username);
-  preg_match_all('#(class="text-muted font-weight-medium">|class="">|class="text-muted mb-2">)(.*?)<(.*?)>([a-zA-Z0-9-, .]*)<#is',str_replace(["'",""],"",$r[1]),$bal);
+  preg_match_all('#(<h5>|class="text-muted font-weight-medium">|class="">|class="text-muted mb-2">)(.*?)<(.*?)>([a-zA-Z0-9-, .]*)<#is',str_replace(["'",''],"",$r[1]),$bal);
   #die(print_r($bal));
   for ($i = 0; $i < 30; $i++) {
   if(trimed(strtolower($bal[2][$i])) == "balance"){
@@ -389,7 +346,7 @@ function base_run($url,$data=0){
   #die(print_r($t_cs));
   
   preg_match('#(timer|wait*)( = *)(\d+)#is',$r[1],$tmr);
-  preg_match_all('#(<h5class="title">|class="card-titlefont-size-18mt-0">|class="card-titletext-centerfont-size-18">|class="text-dark">|class="card-titlemx-auto">|class="card-claim"><h5>|titletext-center">|card-titlemt-0">|margin-bottom:0px;">|class="link-name">|class="card-title">)(.*?)(<)#is',trimed($r[1]),$x);
+  preg_match_all('#(class="card-titlemt-0">|<h5class="title">|class="card-titlefont-size-18mt-0">|class="card-titletext-centerfont-size-18">|class="text-dark">|class="card-titlemx-auto">|class="card-claim"><h5>|titletext-center">|card-titlemt-0">|margin-bottom:0px;">|class="link-name">|class="card-title">)(.*?)(<)#is',trimed($r[1]),$x);#die(print_r($x));
   preg_match_all('#(https?:\/\/[a-zA-Z0-9\/-\/.-]*\/(go|make|pre_verify)\/?[a-zA-Z0-9\/-\/.]*)(.*?)#is',$r[1],$y);
   if($y[0]){
    $y[0] = array_values(array_unique($y[0]));
