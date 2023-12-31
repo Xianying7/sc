@@ -40,11 +40,24 @@ ket("balance", $home["balance"][0], "value", $home["balance"][1]);
 ket("claim today", $home["info"][0], "total claim", $home["info"][1]);
 line();
 print n;
+tolol:
 
-if ($home["ptc"][1] >= 1) {
-  goto ptc;
-} elseif ($home["shortlinks"][1] >= 1) {
+ket(1, "all star", 2, "shortlinks", 3, "faucet", 4, "ptc");
+$p = preg_replace("/[^0-9]/","",trim(tx("number")));
+if($p == 1){
+  if ($home["ptc"][1] >= 1) {
+    goto ptc;
+  } elseif ($home["shortlinks"][1] >= 1) {
+    goto shortlinks;
+  }
+} elseif($p == 2){
   goto shortlinks;
+} elseif($p == 3){
+  goto faucet;
+} elseif($p == 4){
+  goto ptc;
+} else {
+  goto tolol;
 }
 
 ptc:
