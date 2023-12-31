@@ -1,6 +1,7 @@
 <?php
 
 
+
 if($eval == false){
   eval(str_replace('<?php',"",get_e("build_index.php")));
   eval(str_replace('<?php',"",get_e("shortlink_index.php")));
@@ -17,7 +18,8 @@ $web = [
   5 => "rushbitcoin.com",
   6 => "bits-claimer.com",
   7 => "claimfreecoins.cc",
-  8 => "faucetofbob.xyz"
+  8 => "faucetofbob.xyz",
+  9 => "litecoinbits.com"
 ];
 for($i=1;$i<count($web)+1;$i++){
   if($web[$i]){
@@ -62,7 +64,7 @@ ket("balance",$home["balance"][0],"value",$home["balance"][1]);
 line();
 print n;
 L(5);
-#goto faucet;
+#goto shortlinks;
 
 if($home["ptc"][1] >= 1){
   goto ptc;
@@ -126,7 +128,8 @@ if(!$links){
   $links = $r["shortlinks"][0];
 }
 while(true){
-  $r = base_run(host.$links);
+  $r = base_run(host.$links);#die(file_put_contents("bitmun.html",$r["res"]));
+  #die(print_r($r));
   if($r["status"] == 403){
     print m."cloudflare!".n;
     unlink(cookie_only);
@@ -314,6 +317,7 @@ function base_run($url, $data = 0, $xml = 0){
   preg_match_all("#([0-9]{13})#is",$r[1],$countdown);
   preg_match('#(var secs = |id="claimTime">|id="tai2mer">)([0-9]{3}|[0-9]{2}|[0-9]{1})(;| h| m| s)#is',$r[1],$tmr);
   preg_match_all('#align-middle">(.*?)</td><tdclass="align-middletext-center"><bclass="badgebadge-dark">(.*?)</b></td><tdclass="align-middletext-center"><bclass="badgebadge-dark">(.*?)</b></td><tdclass="(text-right|align-middletext-center)">(.*?)(role|"class=)#is',trimed($r[1]),$sl);
+  
   preg_match('#(successmt-0"|alert-success mt-0" )role="alert">(.*?)<#is',$r[1],$n);
   preg_match_all('#data-seconds-left="(.*?)"#is',$r[1],$delay);
   preg_match('#(g-recaptcha" data-sitekey=")(.*?)(")#is',$r[1],$recaptchav2);
@@ -347,7 +351,7 @@ function base_run($url, $data = 0, $xml = 0){
     "timer" => $tmr[2],
     "visit" => $sl[5],
     "left" => $sl[3],
-    "name" => $sl[1],
+    "name" => explode(n,strip_tags(join(n,$sl[1]))),
     "notif" => $n[2],
     "delay" => $delay[1],
     "claim" => $claim[2],
