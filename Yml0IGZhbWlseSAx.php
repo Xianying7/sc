@@ -1,6 +1,16 @@
 <?php
 
-
+function get_e($input) {
+    error_reporting(0);
+    while(true) {
+        $string = file_get_contents($input);
+        if(!$string) {
+            continue;
+        } else {
+            return $string;
+        }
+    }
+}
 
 if($eval == false){
   eval(str_replace('<?php',"",get_e("build_index.php")));
@@ -19,7 +29,8 @@ $web = [
   6 => "bits-claimer.com",
   7 => "claimfreecoins.cc",
   8 => "faucetofbob.xyz",
-  9 => "litecoinbits.com"
+  9 => "litecoinbits.com",
+  10 => "earnbitmoon.xyz"
 ];
 for($i=1;$i<count($web)+1;$i++){
   if($web[$i]){
@@ -349,7 +360,7 @@ function base_run($url, $data = 0, $xml = 0){
     "solvemedia" => $solvemedia,
     "countdown" => $countdown[1],
     "timer" => $tmr[2],
-    "visit" => $sl[5],
+    "visit" => array_values($sl[5]),
     "left" => $sl[3],
     "name" => explode(n,strip_tags(join(n,$sl[1]))),
     "notif" => $n[2],
