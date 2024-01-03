@@ -69,7 +69,7 @@ DATA:
 $u_a = save("useragent");
 $u_c = save(cookie_only);
 #$r = base_run(host."links");die(print_r($r));
-
+#$r = base_run(host."achievements");die(print_r($r));
 
 dashboard:
 $redirect = "dashboard";
@@ -116,7 +116,7 @@ for ($i = 0; $i <= count($link); $i++) {
 if (!$shortlinks) {
     lah(2, $redirect);
     L(5);
-    goto auto;
+    goto achievement;
 }
 
 $n = 0;
@@ -135,7 +135,7 @@ while (true) {
     }
 
     if ($r["status"] == 403) {
-        if (preg_match("#(keforcash.com|claimcoin.in|faucetcrypto.net|freesolana.top)#is", host)) {
+        if (preg_match("#(keforcash.com|claimcoin.in|faucetcrypto.net|banfaucet.com)#is", host)) {
             if (preg_match("#http#is", $dark[0][0])) {
                 ket("info", m . "selamat datang di pasar gelap") . line();
                 goto dark;
@@ -156,7 +156,9 @@ while (true) {
         unset($dark);
         goto firewall;
     }
-
+    if (!$r["left"][0]) {
+        goto achievement;
+    }
     $bypas = visit_short($r);
 
     if ($bypas == "refresh" || $bypas == "skip") {
@@ -165,7 +167,7 @@ while (true) {
         lah(1, $redirect);
         //die("nunggu update fitur lagi");
         L(5);
-        goto auto;
+        goto achievement;
     }
 
     $r1 = base_run($bypas);
@@ -206,7 +208,7 @@ for ($i = 0; $i < count($dark[0]); $i++) {
             print m . "invalid bypass" . n;
             continue;
         } elseif (!$bypas) {
-            goto auto;
+            goto achievement;
         }
 
         base_run($bypas);
@@ -220,8 +222,8 @@ for ($i = 0; $i < count($dark[0]); $i++) {
     }
 }
 
-/*
-achievement
+
+achievement:
 $redirect = "achievements";
 
 for ($i = 0; $i <= count($link); $i++) {
@@ -236,8 +238,8 @@ if (!$achievements) {
     L(5);
     goto auto;
 }
-$r = base_run(!$achievements);
-
+$r = base_run($achievements);
+#die(print_r($r));
 if ($r["status"] == 403) {
     print m . sc . " cloudflare!" . n;
     unlink(cookie_only);
@@ -251,9 +253,7 @@ if ($r["status"] == 403) {
     r();
     goto firewall;
 }
-if(!$r1["balance"]){
-goto auto;
-}
+
 for ($v = 0; $v < count($r["left"]); $v++) {
      if (explode("/", $r["left"][$v])[0] >= explode("/", $r["left"][$v])[1]) {
         $t = $r["token_csrf"];
@@ -273,13 +273,14 @@ for ($v = 0; $v < count($r["left"]); $v++) {
             if ($r1["balance"]) {
                 ket("balance", $r1["balance"]);
                 line();
+                L(5);
             }
            
         }
         goto achievement;
     }
 }
-*/
+
 
 auto:
 $redirect = "auto";
@@ -415,17 +416,16 @@ function base_run($url, $data = 0) {
         }
     }
     if (!$balance) {
-        preg_match('#(class="acc-amount"><i class="fas fa-coins"></i>|xxxx)(.*?)(<)#is', $r[1], $ball);
+        preg_match('#(class="acc-amount"><i class="fas fa-coins"></i>|class="acc-amount"><i class="fas fa-coins"></i>|class="fas fa-dollar-sign"></i>)(.*?)(<)#is', $r[1], $ball);
         $balance = $ball[2];
     }
 
     preg_match_all('#hidden" name="(.*?)" value="(.*?)"#', str_replace('name="anti', '', $r[1]), $t_cs);
 
     preg_match('#(timer|wait*)( = *)(\d+)#is', $r[1], $tmr);
-    #preg_match_all('#(class="card-titlemt-0">|<h5class="title">|class="card-titlefont-size-18mt-0">|class="card-titletext-centerfont-size-18">|class="text-dark">|class="card-titlemx-auto">|class="card-claim"><h5>|titletext-center">|card-titlemt-0">|margin-bottom:0px;">|class="link-name">|class="card-title">)(.*?)(<)#is', trimed($r[1]), $x);
     preg_match_all('#(<spanclass="link-name">|<h4class="card-titlemt-0">|<h5class="title">|class="card-titlefont-size-18mt-0">|<h3class="card-titlemx-auto">|"class="text-dark">|<h5class="card-titletext-centerfont-size-18">|<h5class="card-titlemt-0">)(.*?)(<)#is', str_replace('auto">Hard','',trimed($r[1])), $x);
     preg_match_all('#(https?:\/\/[a-zA-Z0-9\/-\/.-]*\/(go|make|pre_verify)\/?[a-zA-Z0-9\/-\/.]*)(.*?)#is', $r[1], $y);
-
+#die(print_r($x));
     if ($y[0]) {
         $y[0] = array_values(array_unique($y[0]));
     }
@@ -455,7 +455,7 @@ function base_run($url, $data = 0) {
         $n[2] = $nn[2][0] . $nn[2][1];
     }
 
-    preg_match_all("#(https?:\/\/[a-z\/.]*)(verify|ptc\/view|achievements\/claim*)(\/?[a-z0-9\/]*)(.*?)#is", $r[1], $redirect);
+    preg_match_all("#(https?:\/\/[a-z0-9\/.]*)(verify|ptc\/view|achievements\/claim*)(\/?[a-z0-9\/]*)(.*?)#is", $r[1], $redirect);
 
     return [
         "status" => $r[0][1]["http_code"],
