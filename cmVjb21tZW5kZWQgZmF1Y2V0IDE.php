@@ -12,7 +12,7 @@ c();
 
 $web = [
     "keforcash.com",
-    "bitmonk.me",
+  //  "bitmonk.me",
     "claimcoin.in",
     "faucetspeedbtc.com",
     "coinpayz.xyz",
@@ -60,18 +60,22 @@ if (!$host) {
 
 eval(str_replace('name_host', explode(".", $host)[0], str_replace('example', $host, 'const host="https://example/",sc="name_host",cookie_only="cookie_example",mode="vie_free";')));
 
+ket(1, "new cookie", 2, "old cookie (jika tersedia)");
+$tx = tx("number", 1);
+if ($tx == 1) {
+   unlink(cookie_only);
+}
 DATA:
 $u_a = save("useragent");
 $u_c = save(cookie_only);
-#$r1 = base_run(host."links");die(print_r($r1));
-
-
+#$r = base_run(host."links");die(print_r($r));
 
 
 dashboard:
 $redirect = "dashboard";
 $r = base_run(host . "dashboard");
 $link = $r["link"];
+
 
 //goto faucet;
 if ($r["status"] == 403) {
@@ -119,7 +123,6 @@ $n = 0;
 
 while (true) {
     $n++;
-    $u_c = save(cookie_only);
     $r = base_run($shortlinks);#die(print_r($r));
 
     if ($n == 1) {
@@ -132,7 +135,7 @@ while (true) {
     }
 
     if ($r["status"] == 403) {
-        if (preg_match("#(keforcash.com|claimcoin.in)#is", host)) {
+        if (preg_match("#(keforcash.com|claimcoin.in|faucetcrypto.net|freesolana.top)#is", host)) {
             if (preg_match("#http#is", $dark[0][0])) {
                 ket("info", m . "selamat datang di pasar gelap") . line();
                 goto dark;
@@ -178,11 +181,11 @@ while (true) {
 
 dark:
 for ($i = 0; $i < count($dark[0]); $i++) {
-    for ($v = 0; $v < count($dark[0]); $v++) {
+    /*for ($v = 0; $v < count($dark[0]); $v++) {
         if (!array_values($dark[0][$v])) {
            goto auto;
         }
-    }
+    }*/
     if ($dark[0][$i]) {
         $r = base_run($dark[0][$i]);
 
@@ -194,7 +197,7 @@ for ($i = 0; $i < count($dark[0]); $i++) {
         ket("url", $r["url"]) . line();
         $bypas = bypass_shortlinks($r["url"], 1);
 
-        print_r($dark);
+        #print_r($dark);
 
         if ($bypas == "skip") {
             unset($dark[0][$i]);
@@ -217,6 +220,67 @@ for ($i = 0; $i < count($dark[0]); $i++) {
     }
 }
 
+/*
+achievement
+$redirect = "achievements";
+
+for ($i = 0; $i <= count($link); $i++) {
+    if (preg_match("#(ach)#is", $link[$i])) {
+        $achievements = $link[$i];
+        break;
+    }
+}
+
+if (!$achievements) {
+    lah(2, $redirect);
+    L(5);
+    goto auto;
+}
+$r = base_run(!$achievements);
+
+if ($r["status"] == 403) {
+    print m . sc . " cloudflare!" . n;
+    unlink(cookie_only);
+    goto DATA;
+} elseif ($r["register"]) {
+    print m . sc . " cookie expired!" . n;
+    unlink(cookie_only);
+    goto DATA;
+} elseif ($r["firewall"]) {
+    print m . "Firewall!";
+    r();
+    goto firewall;
+}
+if(!$r1["balance"]){
+goto auto;
+}
+for ($v = 0; $v < count($r["left"]); $v++) {
+     if (explode("/", $r["left"][$v])[0] >= explode("/", $r["left"][$v])[1]) {
+        $t = $r["token_csrf"];
+        if ($t) {
+            $data = data_post($t, "null");
+        }
+        $r1 = base_run($r["redirect"][$v], $data);
+        if ($r1["firewall"]) {
+            print m . "Firewall!";
+            r();
+            goto firewall;
+        }
+
+        if (preg_match("#(good|suc|been)#is", $r1["notif"])) {
+            text_line(h . $r1["notif"]);
+
+            if ($r1["balance"]) {
+                ket("balance", $r1["balance"]);
+                line();
+            }
+           
+        }
+        goto achievement;
+    }
+}
+*/
+
 auto:
 $redirect = "auto";
 
@@ -232,7 +296,6 @@ if (!$auto) {
 }
 
 while (true) {
-    $u_c = save(cookie_only);
     $r = base_run($auto);
 
     if ($r["status"] == 403) {
@@ -279,11 +342,6 @@ while (true) {
                 ket("balance", $r1["balance"]);
                 line();
             }
-
-            unlink(cookie_only);
-            $new_cookie = new_cookie($u_c, $r1["cookie"]);
-            file_put_contents(cookie_only, $new_cookie);
-            unset($u_c);
         }
     }
 }
@@ -336,18 +394,19 @@ function base_run($url, $data = 0) {
     $header = h_x();
     $r = curl($url, $header, $data, true, false);
     unset($header);
-
+    #$r[1] = file_get_contents("bitmun.html");
+    #die(file_put_contents("bitmun.html",$r[1]));
     preg_match("#Just a moment#is", $r[1], $cloudflare);
     preg_match("#(login)#is", str_replace(["Login every", "timewall.io/users/login"], "", $r[1]), $register);
     preg_match("#(antibotlink)#is", $r[1], $antb);
     preg_match("#(Protecting faucet|Daily limit reached|for Auto Faucet)#is", $r[1], $limit);
     preg_match("#firewall#is", $r[1], $firewall);
-    preg_match("#(Failed to generate this link)#is", $r[1], $failed);
+    preg_match("#(Failed to generate this link|Invalid Keys)#is", $r[1], $failed);
     preg_match('#"g-recaptcha" data-sitekey="(.*?)"#is', $r[1], $recaptchav2);
     preg_match('#h-captcha" data-sitekey="(.*?)"#is', $r[1], $hcaptcha);
     preg_match('#grecaptcha.execute"(.*?)"#is', str_replace("(", "", $r[1]), $recaptchav3);
     preg_match('#(class="fa-solid fa-user-graduate me-2"></i>|class="text-primary"><p>|user-name-text">|fw-semibold">|key="t-henry">|class="font-size-15 text-truncate">)(.*?)(<)#is', str_replace("#", "", $r[1]), $username);
-    preg_match_all('#(class="mb-2">|class="text-muted font-weight-medium">|class="">|class="text-muted mb-2">)(.*?)<(.*?)>([a-zA-Z0-9-, .]*)<#is', str_replace(["'", "Account"], "", $r[1]), $bal);
+    preg_match_all('#(<h6>|class="text-muted font-weight-normal mb-0 w-100 text-truncate">|class="mb-2">|class="text-muted font-weight-medium">|class="">|class="text-muted mb-2">)(.*?)<(.*?)>([a-zA-Z0-9-, .]*)<#is', str_replace(["'", "Account"], "", $r[1]), $bal);
 
     for ($i = 0; $i < 30; $i++) {
         if (trim(strtolower($bal[2][$i])) == "balance") {
@@ -355,27 +414,33 @@ function base_run($url, $data = 0) {
             break;
         }
     }
+    if (!$balance) {
+        preg_match('#(class="acc-amount"><i class="fas fa-coins"></i>|xxxx)(.*?)(<)#is', $r[1], $ball);
+        $balance = $ball[2];
+    }
 
     preg_match_all('#hidden" name="(.*?)" value="(.*?)"#', str_replace('name="anti', '', $r[1]), $t_cs);
 
     preg_match('#(timer|wait*)( = *)(\d+)#is', $r[1], $tmr);
-    preg_match_all('#(class="card-titlemt-0">|<h5class="title">|class="card-titlefont-size-18mt-0">|class="card-titletext-centerfont-size-18">|class="text-dark">|class="card-titlemx-auto">|class="card-claim"><h5>|titletext-center">|card-titlemt-0">|margin-bottom:0px;">|class="link-name">|class="card-title">)(.*?)(<)#is', trimed($r[1]), $x);
+    #preg_match_all('#(class="card-titlemt-0">|<h5class="title">|class="card-titlefont-size-18mt-0">|class="card-titletext-centerfont-size-18">|class="text-dark">|class="card-titlemx-auto">|class="card-claim"><h5>|titletext-center">|card-titlemt-0">|margin-bottom:0px;">|class="link-name">|class="card-title">)(.*?)(<)#is', trimed($r[1]), $x);
+    preg_match_all('#(<spanclass="link-name">|<h4class="card-titlemt-0">|<h5class="title">|class="card-titlefont-size-18mt-0">|<h3class="card-titlemx-auto">|"class="text-dark">|<h5class="card-titletext-centerfont-size-18">|<h5class="card-titlemt-0">)(.*?)(<)#is', str_replace('auto">Hard','',trimed($r[1])), $x);
     preg_match_all('#(https?:\/\/[a-zA-Z0-9\/-\/.-]*\/(go|make|pre_verify)\/?[a-zA-Z0-9\/-\/.]*)(.*?)#is', $r[1], $y);
 
     if ($y[0]) {
         $y[0] = array_values(array_unique($y[0]));
     }
 
-    preg_match_all('#(>| |\n)(\d+\/+\d+)#is', str_replace(str_split('({['), '', $r[1]), $z);
-
+    preg_match_all('#(>| |\n)(\d+\/+\d+)#is', trimed(str_replace(str_split('({['), '', $r[1])), $z);
+    
     if ($x[2]) {
-        for ($i = 0; $i < count($x[2]); $i++) {
-            if (explode("/", $z[2][$i])[0] == 0) {
+        $ii = count($z[2]);
+        for ($i = 0; $i < $ii; $i++) {
+            if ("0" == explode("/", $z[2][$i])[0]) {
                 unset($z[2][$i]);
                 unset($x[2][$i]);
             }
         }
-
+#die(print_r($x[2]));
         $z[2] = array_values($z[2]);
         $x[2] = array_values($x[2]);
     }
