@@ -2,7 +2,6 @@
 
 
 
-
 if (!$eval) {
     eval(str_replace('<?php', "", get_e("build_index.php")));
     eval(str_replace('<?php', "", get_e("shortlink_index.php")));
@@ -13,7 +12,7 @@ c();
 
 $web = [
     "keforcash.com",
-    #"bitmonk.me",
+    //"bitmonk.me",
     "claimcoin.in",
     "faucetspeedbtc.com",
     "coinpayz.xyz",
@@ -41,13 +40,13 @@ $web = [
     "litecoinline.com",
     "coinsfaucet.xyz",
     "earnbtc.pw",
-    #"coinsward.com",
     "eurofaucet.de",
     "ourcoincash.xyz",
     "feyorra.top",
     "claimtrx.com",
     "bitsfree.net",
     "888satoshis.com",
+    #"kiddyearner.com",
     "banfaucet.com",
 ];
 
@@ -73,8 +72,31 @@ if ($tx == 1) {
 DATA:
 $u_a = save("useragent");
 $u_c = save(cookie_only);
-#$r = base_run(host."shortlinks");die(print_r($r));
-#$r = base_run(host."achievements");die(print_r($r));
+/*$r = base_run(host."faucet");
+$t = $r["token_csrf"];
+print "https://rscaptcha.com/captcha/getimage?token=".explode('"',$t[2][2])[0].n.n;//L(6);
+$img = curl("https://rscaptcha.com/captcha/getimage?token=".explode('"',$t[2][2])[0], h_rs())[1];
+#die(print_r($img));
+for ($i = 0; $i < 5; $i++) {
+            $cap = coordinate($img, $i);
+            if ($cap["x"]) {
+                break;
+            }
+        }
+
+$data = http_build_query([
+explode('"',$t[1][0])[0] => explode('"',$t[2][0])[0],
+"captcha" => "rscaptcha",
+explode('"',$t[1][1])[0] => explode('"',$t[2][1])[0],
+explode('"',$t[1][2])[0] => explode('"',$t[2][2])[0],
+"rscaptcha_response" => $cap["ans"]
+]);
+
+$rr = base_run("https://claimtrx.com/faucet/verify", $data);
+
+print($data);
+die(print_r($r["res"]));*/
+#$r = base_run(host."links");die(print_r($r));
 
 dashboard:
 $redirect = "dashboard";
@@ -129,7 +151,9 @@ $n = 0;
 while (true) {
     $n++;
     $r = base_run($shortlinks);#die(print_r($r));
-
+    if (!$r["res"]) {
+        continue;
+    }
     if ($n == 1) {
         if (preg_match("#http#is", $r["visit"][0])) {
             $dark[] = $r["visit"];
@@ -394,11 +418,11 @@ function base_run($url, $data = 0) {
     tai:
     $header = h_x();
     $r = curl($url, $header, $data, true, false);
-    if (!$r[1]) {
+    /*if (!$r[1]) {
        print m."loss page!";
        r();
        goto tai;
-    }
+    }*/
     unset($header);
     #if($r[0][1]["http_code"] == 0){die(file_put_contents("bitmun.html",$r[1]));}
     #$r[1] = file_get_contents("bitmun.html");
@@ -422,21 +446,22 @@ function base_run($url, $data = 0) {
         }
     }
     if (!$balance) {
-        preg_match('#(<div class="top-balance">\n<p>|class="acc-amount"><i class="fas fa-coins"></i>|class="acc-amount"><i class="fas fa-coins"></i>|class="fas fa-dollar-sign"></i>|<option selected=>)(.*?)(<)#is', str_replace("'","",$r[1]), $ball);
+        preg_match('#(<div class="balance">\n<p>|<div class="top-balance">\n<p>|class="acc-amount"><i class="fas fa-coins"></i>|class="acc-amount"><i class="fas fa-coins"></i>|class="fas fa-dollar-sign"></i>|<option selected=>)(.*?)(<)#is', str_replace("'","",$r[1]), $ball);
         $balance = $ball[2];
     }
 
     preg_match_all('#hidden" name="(.*?)" value="(.*?)"#', str_replace('name="anti', '', $r[1]), $t_cs);
 
     preg_match('#(timer|wait*)( = *)(\d+)#is', $r[1], $tmr);
-    preg_match_all('#(<h5class="card-titletext-center">|<h5class="c_titletext-center">|<spanclass="link-name">|<h4class="card-titlemt-0">|<h5class="title">|class="card-titlefont-size-18mt-0">|<h3class="card-titlemx-auto">|"class="text-dark">|<h5class="card-titletext-centerfont-size-18">|<h5class="card-titlemt-0">)(.*?)(<)#is', str_replace('auto">Hard','',trimed($r[1])), $x);
+    preg_match_all('#(<h2class="fw-bold">|<divclass="titlemb-3"><h2>|<h5class="card-titletext-center">|<h5class="c_titletext-center">|<spanclass="link-name">|<h4class="card-titlemt-0">|<h5class="title">|class="card-titlefont-size-18mt-0">|<h3class="card-titlemx-auto">|"class="text-dark">|<h5class="card-titletext-centerfont-size-18">|<h5class="card-titlemt-0">)(.*?)(<)#is', str_replace('auto">Hard','',trimed($r[1])), $x);
     preg_match_all('#(https?:\/\/[a-zA-Z0-9\/-\/.-]*\/(go|make|pre_verify)\/?[a-zA-Z0-9\/-\/.]*)(.*?)#is', $r[1], $y);
 #die(print_r($x));
+
     if ($y[0]) {
         $y[0] = array_values(array_unique($y[0]));
     }
 #unset($y[0][0]);die(print_r($y[0]));
-    preg_match_all('#(>| |\n)(\d+\/+\d+)#is', trimed(str_replace(str_split('({['), '', $r[1])), $z);
+    preg_match_all('#(>| |\n)(\d+\/+\d+)#is', trimed(str_replace([str_split('({['), ""], '', $r[1])), $z);
     
     if ($x[2]) {
         $ii = count($z[2]);
@@ -507,5 +532,22 @@ function h_x() {
     if ($u_c) {
         $header[] = "cookie: " . $u_c;
     }
+    return $header;
+}
+#https://rscaptcha.com/captcha/getimage?token=YLxN8ziwPrlBJOAn3ZWRmesUa
+
+
+function h_rs() {
+    global $u_a;
+    $header[] = 'Host: rscaptcha.com';
+$header[] = 'sec-ch-ua: "Chromium";v="93", " Not;A Brand";v="99"';
+$header[] = 'user-agent: Mozilla/5.0 (Linux; Android 13; M2012K11AG) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.14 Mobile Safari/537.36';
+$header[] = 'accept: image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8';
+$header[] = 'sec-fetch-site: cross-site';
+$header[] = 'sec-fetch-mode: no-cors';
+$header[] = 'sec-fetch-dest: image';
+$header[] = 'referer: https://claimtrx.com/';
+//$header[] = 'accept-encoding: gzip, deflate, br';
+$header[] = 'accept-language: id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7';
     return $header;
 }
