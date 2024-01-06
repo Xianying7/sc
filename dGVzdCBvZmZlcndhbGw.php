@@ -5,19 +5,20 @@
 
 
 
+
 if($eval == false){
     error_reporting(0);
     eval(str_replace('<?php',"",get_e("build_index.php")));
     eval(str_replace('<?php',"",get_e("shortlink_index.php")));
 }
-#die(print_r(analysis_icon($img)));
+
 eval(str_replace('name_host',explode(".","bitcotasks.com")[0],str_replace('example','bitcotasks.com','const host="https://example/",sc="name_host",cookie_only="cookie_example",mode="ofer";')));
 
 
 DATA:
 $u_a = save("useragent");
 $url = save("url_offerwall");
-#$url = "https://bitcotasks.com//offerwall/qbgxxjznt1xfm07irbrybnhiwqr2sh/1196255";
+
 $build = parse_url(str_replace("//offerwall","/offerwall",$url));
 $user = explode("/",$build["path"])[3];
 $key = explode("/",$build["path"])[2];
@@ -27,9 +28,9 @@ unlink("ofer.txt");
 
 home:
 c();
-ket(1, "shortlinks", 2, "ptc");
+ket(1, "shortlinks", 2, "ptc");#, 3, "game");
 $inp = tx("number").line();
-if($inp == 1 || $inp == 2){
+if($inp == 1 || $inp == 2){# || $inp == 3){
   print k."start offerwall";
   r();
 } else {
@@ -55,19 +56,30 @@ while(true){
       "token" => $r["data"][0],
       "action" => "switch_cat"
       ]);
+      $t = time()+60;
       $r1 = base_offer($url, $data, 1);#die(print_r($r1));
       $data_token = array(
         "sid" => $user,
         "key" => $key,
         "token" => $r["data"][0]
       );
-      $bypass = visit_short($r1, $url, $data_token);      
-      if($bypass){
-        L(20);
-        $r2 = base_offer($bypass);
-        print h.$r2["notif"].n;
-        line();
+      $bypass = visit_short($r1, $url, $data_token);
+      if($bypass == "refresh" || $bypass == "skip"){
         goto offerwall;
+      } elseif(!$bypass){
+        goto home;
+      }
+      if($bypass){
+        $t1 = time();
+        if($t - $t1 >= 1){
+          L($t - $t1);
+        }
+        $r2 = base_offer($bypass);
+        if(preg_match("#suc#is",$r2["notif"])){
+          print h.$r2["notif"].n;
+          line();
+          goto offerwall;
+        }
       }
       if($x == 3){
         goto home;
@@ -79,6 +91,31 @@ while(true){
     "token" => $r["data"][0],
     "action" => "switch_cat"
     ]);
+  } elseif($inp == 3){
+  games:
+  $data = http_build_query([
+    "type" => "games",
+    "token" => $r["data"][0],
+    "action" => "switch_cat"
+    ]);
+  $r1 = base_offer($url, $data, 1);
+  if($r1["lg"]){
+    $lg = "https://".$build["host"].$r1["lg"];
+    $r1 = base_offer($lg);
+    #die(print_r($r1));
+    $data = http_build_query([
+      "score" => 512,
+      "action" => "proccess_game",
+      "token" => $r["data"][0],
+      ]);print($data);
+    L(30); 
+    $r1 = base_offer($lg, $data, 1);
+    die(print_r($r1));
+  } else {
+   continue;
+  }
+  die(print_r($r1));
+  die(print_r(json_decode($r1["res"])));
   }
   #die($data);
   $r1 = base_offer($url, $data, 1);
@@ -145,7 +182,7 @@ function base_offer($url, $data = 0, $xml = 0){
   #$json = json_decode($r[1]);
   }
   preg_match("#to_link = '(.*?)'#is",$r[1],$url);
-  preg_match_all("#var (token|sub_id|hash|key) = '(.*?)'#is",$r[1],$data);
+  preg_match_all("#var (token|sub_id|hash|key|game_token) = '(.*?)'#is",$r[1],$data);
   preg_match_all('#data-hash=\\\"(.*?)\\\"#is',$r[1],$hash);
   preg_match_all('#data-slid=\\\"(.*?)\\\"#is',$r[1],$slid);
   preg_match_all('#<h3>(.*?)<#is',str_replace("t<h3><","",$r[1]),$name);
@@ -159,6 +196,7 @@ function base_offer($url, $data = 0, $xml = 0){
   preg_match_all('#(https?:\/\/[a-zA-Z0-9\/-\/.-]*\/game\/play\/?[0-9-\/]*)(.*?)#is',$r[1],$play);
   preg_match('#(play )(\d+\/+\d+)#is', $r[1],$ready);
   preg_match('#recaptcha" data-sitekey="(.*?)"#is',$r[1],$recaptchav2);
+  preg_match("#window.open[(]'(.*?)'#is",$r[1],$lg);
   # https://coins-battle.com/game/play/353
   print p;
   return [
@@ -179,6 +217,7 @@ function base_offer($url, $data = 0, $xml = 0){
     "ready" => $ready[2],
     "token" => $token,
     "recaptchav2" => $recaptchav2[1],
+    "lg" => stripslashes($lg[1]),
     "status" => $r[0][1]["http_code"]
     
     ];
@@ -242,7 +281,6 @@ function icon_offer($host){
         return $answer;
       }
 }
-
 
 
 
