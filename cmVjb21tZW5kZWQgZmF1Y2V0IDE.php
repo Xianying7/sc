@@ -7,6 +7,8 @@ if (!$eval) {
     eval(str_replace('<?php', "", get_e("shortlink_index.php")));
 }
 
+
+
 go:
 c();
 
@@ -46,6 +48,9 @@ $web = [
     "claimtrx.com",
     "bitsfree.net",
     "888satoshis.com",
+    "earnfreebtc.io",
+    "bambit.xyz",
+    #"feyorra.site",
     #"kiddyearner.com",
     "banfaucet.com",
 ];
@@ -164,7 +169,7 @@ while (true) {
     }
 
     if ($r["status"] == 403) {
-        if (preg_match("#(keforcash.com|claimcoin.in|faucetcrypto.net|bitsfree.net|888satoshis.com)#is", host)) {
+        if (preg_match("#(keforcash.com|claimcoin.in|faucetcrypto.net|banfaucet.com|bitsfree.net|888satoshis.com)#is", host)) {
             if (preg_match("#http#is", $dark[0][0])) {
                 ket("info", m . "selamat datang di pasar gelap") . line();
                 goto dark;
@@ -446,14 +451,14 @@ function base_run($url, $data = 0) {
         }
     }
     if (!$balance) {
-        preg_match('#(<div class="balance">\n<p>|<div class="top-balance">\n<p>|class="acc-amount"><i class="fas fa-coins"></i>|class="acc-amount"><i class="fas fa-coins"></i>|class="fas fa-dollar-sign"></i>|<option selected=>)(.*?)(<)#is', str_replace("'","",$r[1]), $ball);
+        preg_match('#(<h6 class="text-gray-700 rajdhani-600 mb-0 lh-18 ms-0 font-sm dark-text">|<div class="balance">\n<p>|<div class="top-balance">\n<p>|class="acc-amount"><i class="fas fa-coins"></i>|class="acc-amount"><i class="fas fa-coins"></i>|class="fas fa-dollar-sign"></i>|<option selected=>)(.*?)(<)#is', str_replace("'","",$r[1]), $ball);
         $balance = $ball[2];
     }
 
     preg_match_all('#hidden" name="(.*?)" value="(.*?)"#', str_replace('name="anti', '', $r[1]), $t_cs);
 
     preg_match('#(timer|wait*)( = *)(\d+)#is', $r[1], $tmr);
-    preg_match_all('#(<h2class="fw-bold">|<divclass="titlemb-3"><h2>|<h5class="card-titletext-center">|<h5class="c_titletext-center">|<spanclass="link-name">|<h4class="card-titlemt-0">|<h5class="title">|class="card-titlefont-size-18mt-0">|<h3class="card-titlemx-auto">|"class="text-dark">|<h5class="card-titletext-centerfont-size-18">|<h5class="card-titlemt-0">)(.*?)(<)#is', str_replace('auto">Hard','',trimed($r[1])), $x);
+    preg_match_all('#(<iclass="feather-linkme-1"></i>|<h2class="fw-bold">|<divclass="titlemb-3"><h2>|<h5class="card-titletext-center">|<h5class="c_titletext-center">|<spanclass="link-name">|<h4class="card-titlemt-0">|<h5class="title">|class="card-titlefont-size-18mt-0">|<h3class="card-titlemx-auto">|"class="text-dark">|<h5class="card-titletext-centerfont-size-18">|<h5class="card-titlemt-0">)(.*?)(<)#is', str_replace('auto">Hard','',trimed($r[1])), $x);
     preg_match_all('#(https?:\/\/[a-zA-Z0-9\/-\/.-]*\/(go|make|pre_verify)\/?[a-zA-Z0-9\/-\/.]*)(.*?)#is', $r[1], $y);
 #die(print_r($x));
 
@@ -551,3 +556,22 @@ $header[] = 'referer: https://claimtrx.com/';
 $header[] = 'accept-language: id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7';
     return $header;
 }
+
+
+function h_tk($json) {
+    global $u_a,$u_c;
+    $header[] = 'host: tokenmix.pro';
+    $header[] = 'accept: application/json, text/plain, */*';
+    if ($json) {
+       $header[] = 'content-type: application/json';
+    }
+    $header[] = 'user-agent: '.$u_a;
+    $header[] = 'referer: https://tokenmix.pro/';
+    $header[] = 'accept-language: id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7';
+    $header[] = 'cookie: '.$u_c;
+    return $header;
+}
+
+
+
+
