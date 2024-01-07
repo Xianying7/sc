@@ -235,7 +235,7 @@ function bypass_shortlinks_tokenmix($r) {
     $config = config();
 
     $sls = $r->sls;
-    if (!$sls[0]) {
+    if (!$sls[1]->name) {
         return "refresh";
     }
 
